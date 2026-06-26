@@ -44,20 +44,6 @@ body {
   transition: background 0.3s, color 0.3s;
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 160px;
-  z-index: 5;
-  background: var(--bg);
-  -webkit-mask-image: linear-gradient(to bottom, black 50px, transparent 160px);
-  mask-image: linear-gradient(to bottom, black 50px, transparent 160px);
-  pointer-events: none;
-  transition: background 0.3s;
-}
 #app {
   max-width: 680px;
   margin: 0 auto;
@@ -71,10 +57,11 @@ body::before {
   top: 0;
   z-index: 10;
   padding: 48px 0 24px;
-  background: var(--glass-bg);
-  backdrop-filter: blur(40px) saturate(1.2);
-  -webkit-backdrop-filter: blur(40px) saturate(1.2);
-  transition: background 0.3s;
+  transition: padding 0.2s;
+}
+
+#header.compact {
+  padding: 8px 0 12px;
 }
 
 .title {
