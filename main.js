@@ -1,46 +1,41 @@
 import Fuse from 'fuse.js';
 
-let bible = { books: [] };
-let bookLookup = {};
+let verseList = [];
+let bookIndex = {};
 let fuse;
+let debounceTimer;
 
 function parseRef(ref) {
-  const match = ref.match(/^(.+?)\s+(\d+):(\d+)$/);
-  if (!match) return null;
-  return { book: match[1], chapter: parseInt(match[2]), verse: parseInt(match[3]) };
+  const m = ref.match(/^(.+?)\s+(\d+):(\d+)$/);
+  return m ? { book: m[1], chapter: parseInt(m[2]), verse: parseInt(m[3]) } : null;
 }
 
 async function loadBible() {
   const res = await fetch('/data/verses-1769.json');
   const data = await res.json();
 
-  const verseList = [];
-  const bookMap = new Map();
+  verseList = [];
+  const raw = new Map();
 
   for (const [ref, text] of Object.entries(data)) {
-    const parsed = parseRef(ref);
-    if (!parsed) continue;
+    const p = parseRef(ref);
+    if (!p) continue;
     verseList.push({ ref, text });
-
-    if (!bookMap.has(parsed.book)) bookMap.set(parsed.book, new Map());
-    const chMap = bookMap.get(parsed.book);
-    if (!chMap.has(parsed.chapter)) chMap.set(parsed.chapter, []);
-    chMap.get(parsed.chapter).push({ verse: parsed.verse, ref, text });
+    if (!raw.has(p.book)) raw.set(p.book, new Map());
+    const chMap = raw.get(p.book);
+    if (!chMap.has(p.chapter)) chMap.set(p.chapter, []);
+    chMap.get(p.chapter).push({ ref, text, verse: p.verse });
   }
 
-  const seen = new Set();
   for (const [ref] of Object.entries(data)) {
-    const parsed = parseRef(ref);
-    if (!parsed || seen.has(parsed.book)) continue;
-    seen.add(parsed.book);
-
-    const chMap = bookMap.get(parsed.book);
-    const chapters = [];
-    for (const [num, verses] of chMap) chapters.push({ num, verses });
-    chapters.sort((a, b) => a.num - b.num);
-
-    bible.books.push({ name: parsed.book, chapters });
-    bookLookup[parsed.book] = bible.books[bible.books.length - 1];
+    const p = parseRef(ref);
+    if (!p || bookIndex[p.book]) continue;
+    const chMap = raw.get(p.book);
+    const chapters = {};
+    for (const [num, verses] of chMap) {
+      chapters[num] = verses.sort((a, b) => a.verse - b.verse);
+    }
+    bookIndex[p.book] = { name: p.book, chapters };
   }
 
   fuse = new Fuse(verseList, {
@@ -49,195 +44,113 @@ async function loadBible() {
     includeMatches: true
   });
 
-  renderSidebar();
-  handleHash();
-}
-
-function renderSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  sidebar.innerHTML = '<div class="sidebar-header"><h3>BOOKS</h3></div>';
-
-  for (const book of bible.books) {
-    const bookEl = document.createElement('div');
-    bookEl.className = 'book-item';
-
-    const nameEl = document.createElement('span');
-    nameEl.className = 'book-name';
-    nameEl.textContent = book.name;
-
-    const chList = document.createElement('div');
-    chList.className = 'chapter-list';
-
-    for (const ch of book.chapters) {
-      const chEl = document.createElement('span');
-      chEl.className = 'chapter-link';
-      chEl.textContent = ch.num;
-      chEl.dataset.book = book.name;
-      chEl.dataset.chapter = ch.num;
-      chEl.addEventListener('click', e => {
-        e.stopPropagation();
-        loadChapter(book.name, ch.num);
-      });
-      chList.appendChild(chEl);
+  const hash = location.hash.slice(1);
+  if (hash) {
+    const m = hash.match(/^(.+?)-(\d+)-(\d+)$/);
+    if (m) {
+      loadChapter(`${m[1].replace(/_/g, ' ')} ${m[2]}:${m[3]}`);
+      return;
     }
-
-    nameEl.addEventListener('click', e => {
-      e.stopPropagation();
-      const expanded = bookEl.classList.toggle('expanded');
-    });
-
-    bookEl.appendChild(nameEl);
-    bookEl.appendChild(chList);
-    sidebar.appendChild(bookEl);
   }
+  showRandomVerse();
 }
 
-function loadChapter(bookName, chapterNum) {
-  const book = bookLookup[bookName];
+function showRandomVerse() {
+  const entry = verseList[Math.floor(Math.random() * verseList.length)];
+  renderEntries([entry], 'home');
+}
+
+function doSearch() {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    const q = document.getElementById('search-input').value.trim();
+    if (!q) { showRandomVerse(); return; }
+    const results = fuse.search(q);
+    renderEntries(results.map(r => ({
+      ref: r.item.ref, text: r.item.text, highlight: q
+    })), 'search');
+  }, 120);
+}
+
+function loadChapter(ref) {
+  const p = parseRef(ref);
+  if (!p) return;
+  const book = bookIndex[p.book];
   if (!book) return;
-  const ch = book.chapters.find(c => c.num === chapterNum);
+  const ch = book.chapters[p.chapter];
   if (!ch) return;
 
-  const content = document.getElementById('content');
-  content.innerHTML = `<h2 class="chapter-heading">${bookName} ${chapterNum}</h2>`;
+  renderEntries(ch, 'chapter');
 
-  for (const v of ch.verses) {
-    content.appendChild(createVerseEl(v.ref, v.text));
-  }
-
-  document.getElementById('page').scrollTop = 0;
-
-  const hash = `#${bookName.replace(/\s+/g, '_')}-${chapterNum}-${ch.verses[0].verse}`;
+  const hash = `#${p.book.replace(/\s/g, '_')}-${p.chapter}-${ch[0].verse}`;
   history.pushState(null, '', hash);
+  document.getElementById('search-input').value = '';
+}
 
-  document.querySelectorAll('.book-item').forEach(b => b.classList.remove('active'));
-  const sidebarLinks = document.querySelectorAll('.chapter-link');
-  sidebarLinks.forEach(l => {
-    if (l.dataset.book === bookName && parseInt(l.dataset.chapter) === chapterNum) {
-      l.closest('.book-item').classList.add('active');
+function renderEntries(entries, mode) {
+  const container = document.getElementById('results');
+  container.innerHTML = '';
+
+  if (mode === 'chapter') {
+    const p = parseRef(entries[0].ref);
+    const h = document.createElement('div');
+    h.className = 'chapter-heading';
+    h.textContent = `${p.book} ${p.chapter}`;
+    container.appendChild(h);
+  }
+
+  entries.forEach((entry, i) => {
+    const el = document.createElement('div');
+    el.className = 'result-item';
+    el.style.animationDelay = `${i * 24}ms`;
+
+    const text = document.createElement('div');
+    text.className = 'result-text';
+    if (entry.highlight) {
+      const esc = entry.highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      text.innerHTML = entry.text.replace(
+        new RegExp(`(${esc})`, 'gi'),
+        '<span class="result-highlight">$1</span>'
+      );
+    } else {
+      text.textContent = entry.text;
     }
+
+    const ref = document.createElement('div');
+    ref.className = 'result-ref';
+    ref.textContent = `\u2014 ${entry.ref}`;
+
+    el.appendChild(text);
+    el.appendChild(ref);
+
+    if (mode !== 'chapter') {
+      el.addEventListener('click', () => loadChapter(entry.ref));
+    }
+
+    container.appendChild(el);
   });
 }
 
-function createVerseEl(ref, text, highlight = '') {
-  const div = document.createElement('div');
-  div.className = 'verse';
-  div.id = ref.replace(/[\s:]/g, '-');
-
-  let displayText = text;
-  if (highlight) {
-    const escaped = highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regex = new RegExp(`(${escaped})`, 'gi');
-    displayText = text.replace(regex, '<mark class="highlight">$1</mark>');
-  }
-
-  div.innerHTML = `<sup class="verse-num">${ref.split(':')[1]}</sup> ${displayText}`;
-
-  div.addEventListener('dblclick', () => showLoupe(ref, text));
-
-  return div;
-}
-
-function showLoupe(ref, text) {
-  const existing = document.querySelector('.loupe-overlay');
-  if (existing) existing.remove();
-
-  const overlay = document.createElement('div');
-  overlay.className = 'loupe-overlay';
-  overlay.innerHTML = `
-    <div class="loupe-content">
-      <div class="loupe-close">&times;</div>
-      <div class="loupe-ref">${ref}</div>
-      <div class="loupe-text">${text}</div>
-    </div>
-  `;
-  overlay.addEventListener('click', e => {
-    if (e.target === overlay || e.target.closest('.loupe-close')) overlay.remove();
-  });
-  document.body.appendChild(overlay);
-}
-
-function handleSearch() {
-  const query = document.getElementById('search-input').value.trim();
-  if (!query || !fuse) return;
-
-  const results = fuse.search(query);
-  const content = document.getElementById('content');
-  content.innerHTML = `<h2 class="search-heading">Search: &ldquo;${query}&rdquo; (${results.length})</h2>`;
-
-  for (const r of results) {
-    content.appendChild(createVerseEl(r.item.ref, r.item.text, query));
-  }
-}
-
-document.getElementById('search-btn').addEventListener('click', handleSearch);
-document.getElementById('search-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') handleSearch();
-});
-
-function handleHash() {
-  const hash = location.hash.slice(1);
-  if (!hash) {
-    loadChapter('Genesis', 1);
-    return;
-  }
-
-  const match = hash.match(/^(.+?)-(\d+)-(\d+)$/);
-  if (!match) return;
-
-  const bookName = match[1].replace(/_/g, ' ');
-  const chapterNum = parseInt(match[2]);
-  const verseNum = parseInt(match[3]);
-
-  loadChapter(bookName, chapterNum);
-
-  setTimeout(() => {
-    const id = `${bookName.replace(/\s+/g, '-')}-${chapterNum}-${verseNum}`;
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, 100);
-}
-
-window.addEventListener('hashchange', handleHash);
-
-let isDragging = false;
-let startX, startY, scrollLeft, scrollTop;
-const page = document.getElementById('page');
-
-page.addEventListener('mousedown', e => {
-  if (e.target.closest('input, button, .chapter-link, .book-name, .loupe-overlay')) return;
-  isDragging = true;
-  startX = e.pageX - page.offsetLeft;
-  startY = e.pageY - page.offsetTop;
-  scrollLeft = page.scrollLeft;
-  scrollTop = page.scrollTop;
-});
-
-window.addEventListener('mousemove', e => {
-  if (!isDragging) return;
-  e.preventDefault();
-  const x = e.pageX - page.offsetLeft;
-  const y = e.pageY - page.offsetTop;
-  page.scrollLeft = scrollLeft - (x - startX);
-  page.scrollTop = scrollTop - (y - startY);
-});
-
-window.addEventListener('mouseup', () => isDragging = false);
-
-document.getElementById('theme-toggle').addEventListener('click', () => {
-  document.body.classList.toggle('dark-mode');
-  document.getElementById('theme-toggle').textContent =
-    document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
-});
+const input = document.getElementById('search-input');
+input.addEventListener('input', doSearch);
 
 document.addEventListener('keydown', e => {
-  if (e.key === '/' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+  if (e.key === '/' && document.activeElement !== input) {
     e.preventDefault();
-    document.getElementById('search-input').focus();
+    input.focus();
   }
   if (e.key === 'Escape') {
-    document.querySelector('.loupe-overlay')?.remove();
+    input.value = '';
+    showRandomVerse();
+    input.blur();
   }
+});
+
+window.addEventListener('hashchange', () => {
+  const hash = location.hash.slice(1);
+  if (!hash) { showRandomVerse(); return; }
+  const m = hash.match(/^(.+?)-(\d+)-(\d+)$/);
+  if (m) loadChapter(`${m[1].replace(/_/g, ' ')} ${m[2]}:${m[3]}`);
 });
 
 loadBible();
