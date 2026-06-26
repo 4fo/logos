@@ -11,7 +11,8 @@ function parseRef(ref) {
 }
 
 async function loadBible() {
-  const res = await fetch('/data/verses-1769.json');
+  const base = import.meta.env.BASE_URL;
+  const res = await fetch(`${base}data/verses-1769.json`);
   const data = await res.json();
 
   verseList = [];
