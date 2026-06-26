@@ -3,10 +3,10 @@
 :root {
   --bg: #0a0a0a;
   --fg: #e0e0e0;
-  --glass-bg: rgba(255, 255, 255, 0.33);
-  --glass-border: rgba(255, 255, 255, 0.09);
-  --glass-focus: rgba(255, 255, 255, 0.33);
-  --glass-shadow: rgba(255, 255, 255, 0.09);
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-focus: rgba(255, 255, 255, 0.18);
+  --glass-shadow: rgba(255, 255, 255, 0.08);
   --placeholder: rgba(255, 255, 255, 0.2);
   --result-text: rgba(255, 255, 255, 0.88);
   --result-ref: rgba(255, 255, 255, 0.33);
@@ -20,10 +20,10 @@
 body.light {
   --bg: #f5f2ed;
   --fg: #1a1a1a;
-  --glass-bg: rgba(0, 0, 0, 0.33);
-  --glass-border: rgba(0, 0, 0, 0.09);
-  --glass-focus: rgba(0, 0, 0, 0.33);
-  --glass-shadow: rgba(0, 0, 0, 0.09);
+  --glass-bg: rgba(0, 0, 0, 0.03);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-focus: rgba(0, 0, 0, 0.15);
+  --glass-shadow: rgba(0, 0, 0, 0.06);
   --placeholder: rgba(0, 0, 0, 0.2);
   --result-text: rgba(0, 0, 0, 0.85);
   --result-ref: rgba(0, 0, 0, 0.33);
@@ -44,12 +44,21 @@ body {
   transition: background 0.3s, color 0.3s;
 }
 
+body::before {
+  content: '';
+  position: fixed;
+  top: 62px;
+  left: 0;
+  right: 0;
+  height: 100px;
+  z-index: 5;
+  background: var(--bg);
+  -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent);
+  mask-image: linear-gradient(to bottom, black 30%, transparent);
+  pointer-events: none;
+  transition: background 0.3s;
+}
 #app {
-  max-width: 680px;
-  margin: 0 auto;
-  padding: 48px 24px 120px;
-  min-height: 100vh;
-  position: relative;
 }
 
 .title {
