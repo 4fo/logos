@@ -12,7 +12,17 @@ if [ ! -d "node_modules" ]; then
 fi
 
 echo "Starting dev server..."
-echo "Open the URL shown below in your browser."
-echo "Press Ctrl+C to stop."
+npm run dev &
+VITE_PID=$!
+
+for i in $(seq 1 30); do
+  if curl -s http://localhost:5173 > /dev/null 2>&1; then
+    open http://localhost:5173
+    break
+  fi
+  sleep 0.5
+done
+
 echo ""
-npm run dev
+echo "Press Ctrl+C to stop the server."
+wait $VITE_PID
