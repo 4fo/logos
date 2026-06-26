@@ -1,8 +1,8 @@
-import Fuse from 'fuse.js';
+import FlexSearch from 'flexsearch';
 
 let verseList = [];
 let bookIndex = {};
-let fuse = null;
+let searchIndex = null;
 let debounceTimer;
 let ready = false;
 
@@ -47,11 +47,9 @@ async function loadBible() {
       bookIndex[p.book] = { name: p.book, chapters };
     }
 
-    fuse = new Fuse(verseList, {
-      keys: ['text', 'ref'],
-      threshold: 0.3,
-      includeMatches: true
-    });
+    const idx = new FlexSearch.Index({ tokenize: 'forward' });
+    verseList.forEach((v, i) => idx.add(i, `${v.ref} ${v.text}`));
+    searchIndex = idx;
 
     ready = true;
 
@@ -82,9 +80,9 @@ function doSearch() {
     if (!ready) return;
     const q = document.getElementById('search-input').value.trim();
     if (!q) { showRandomVerse(); return; }
-    const results = fuse.search(q);
-    renderEntries(results.map(r => ({
-      ref: r.item.ref, text: r.item.text, highlight: q
+    const ids = searchIndex.search(q);
+    renderEntries(ids.map(id => ({
+      ref: verseList[id].ref, text: verseList[id].text, highlight: q
     })), 'search');
   }, 333);
 }

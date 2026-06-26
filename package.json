@@ -10,7 +10,7 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
-    "fuse.js": "^7.4.2",
+    "flexsearch": "^0.8.212",
     "vite": "^8.1.0"
   },
   "devDependencies": {
