@@ -83,10 +83,10 @@ function doSearch() {
     const q = document.getElementById('search-input').value.trim();
     if (!q) { showRandomVerse(); return; }
     const results = fuse.search(q);
-    renderEntries(results.slice(0, 20).map(r => ({
+    renderEntries(results.map(r => ({
       ref: r.item.ref, text: r.item.text, highlight: q
     })), 'search');
-  }, 400);
+  }, 333);
 }
 
 function loadChapter(ref) {
@@ -145,6 +145,17 @@ function renderEntries(entries, mode) {
     }
 
     container.appendChild(el);
+  });
+
+  requestAnimationFrame(() => {
+    const items = container.querySelectorAll('.result-item');
+    const viewH = window.innerHeight;
+    let visible = 0;
+    items.forEach(el => {
+      if (el.getBoundingClientRect().top < viewH) {
+        el.style.animationDelay = `${visible++ * 33}ms`;
+      }
+    });
   });
 }
 
