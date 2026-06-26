@@ -43,8 +43,12 @@ body.light {
   --search-color: #000;
 }
 
+body.light {
+  background: radial-gradient(ellipse at 50% 0%, #faf8f5, var(--bg) 70%);
+}
+
 body {
-  background: var(--bg);
+  background: radial-gradient(ellipse at 50% 0%, #1a1a1a, var(--bg) 70%);
   color: var(--fg);
   font-family: 'Rosarivo', serif;
   min-height: 100vh;
