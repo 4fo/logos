@@ -233,14 +233,8 @@ window.addEventListener('hashchange', () => {
   if (m) loadChapter(`${m[1].replace(/_/g, ' ')} ${m[2]}:${m[3]}`);
 });
 
-function onScroll() {
-  const h = document.getElementById('header');
-  if (window.scrollY > 80) {
-    h.classList.add('compact');
-  } else if (window.scrollY < 20) {
-    h.classList.remove('compact');
-  }
-}
-window.addEventListener('scroll', onScroll, { passive: true });
+new IntersectionObserver(([e]) => {
+  document.getElementById('header').classList.toggle('compact', !e.isIntersecting);
+}, { threshold: 0 }).observe(document.getElementById('sentinel'));
 
 loadBible();

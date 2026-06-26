@@ -52,13 +52,21 @@ body {
   position: relative;
 }
 
+#sentinel {
+  position: absolute;
+  top: 0;
+  height: 1px;
+  width: 100%;
+  pointer-events: none;
+}
+
 #header {
   position: sticky;
   top: 0;
   z-index: 10;
   padding: 48px 0 24px;
   background: var(--bg);
-  transition: background 0.3s;
+  transition: padding 0.25s, background 0.3s;
 }
 
 #header.compact {
@@ -76,7 +84,7 @@ body {
   font-weight: 400;
   position: relative;
   z-index: 6;
-  transition: color 0.3s;
+  transition: font-size 0.25s, opacity 0.25s, margin-bottom 0.25s, letter-spacing 0.25s, color 0.3s;
 }
 
 #header.compact .title {
