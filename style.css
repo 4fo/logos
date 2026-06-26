@@ -64,14 +64,11 @@ body {
 }
 
 #header {
-  position: fixed;
-  top: 16px;
-  left: 0;
-  right: 0;
+  position: sticky;
+  top: 0;
   z-index: 10;
-  width: calc(100% - 32px);
   max-width: 680px;
-  margin: 0 auto;
+  margin: 16px auto 0;
   padding: 20px 24px 16px;
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
@@ -191,7 +188,7 @@ body {
 #results {
   max-width: 680px;
   margin: 0 auto;
-  padding: 160px 24px 120px;
+  padding: 24px 24px 120px;
 }
 
 .result-item {
@@ -247,8 +244,8 @@ body {
 }
 
 @media (max-width: 480px) {
-  #header { padding: 16px; width: calc(100% - 16px); }
-  #results { padding: 150px 16px 80px; }
+  #header { padding: 16px; margin: 8px auto 0; }
+  #results { padding: 24px 16px 80px; }
   #search-input { padding: 12px 18px; font-size: 0.9rem; }
   .result-text { font-size: 1.05rem; }
 }
