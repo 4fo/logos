@@ -9,8 +9,8 @@
   --glass-shadow: rgba(255, 255, 255, 0.08);
   --placeholder: rgba(255, 255, 255, 0.2);
   --result-text: rgba(255, 255, 255, 0.88);
-  --result-ref: rgba(255, 255, 255, 0.25);
-  --result-ref-hover: rgba(255, 255, 255, 0.45);
+  --result-ref: rgba(255, 255, 255, 0.33);
+  --result-ref-hover: rgba(255, 255, 255, 0.66);
   --highlight-bg: rgba(255, 255, 255, 0.06);
   --highlight-text: #fff;
   --chapter-heading: rgba(255, 255, 255, 0.15);
@@ -26,8 +26,8 @@ body.light {
   --glass-shadow: rgba(0, 0, 0, 0.06);
   --placeholder: rgba(0, 0, 0, 0.2);
   --result-text: rgba(0, 0, 0, 0.85);
-  --result-ref: rgba(0, 0, 0, 0.25);
-  --result-ref-hover: rgba(0, 0, 0, 0.45);
+  --result-ref: rgba(0, 0, 0, 0.33);
+  --result-ref-hover: rgba(0, 0, 0, 0.66);
   --highlight-bg: rgba(0, 0, 0, 0.06);
   --highlight-text: #000;
   --chapter-heading: rgba(0, 0, 0, 0.2);
@@ -171,7 +171,7 @@ body {
 }
 
 .result-ref {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: var(--result-ref);
   font-style: italic;
   transition: color 0.2s;
