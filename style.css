@@ -58,13 +58,30 @@ body {
   z-index: 10;
   padding: 48px 0 24px;
   background: var(--bg);
-  border-bottom: 1px solid transparent;
-  transition: padding 0.2s, background 0.3s, border-color 0.2s;
+  transition: padding 0.2s, background 0.3s;
 }
 
 #header.compact {
   padding: 8px 0 12px;
-  border-bottom-color: var(--glass-border);
+}
+
+#header::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: var(--bg);
+  -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+  mask-image: linear-gradient(to bottom, black, transparent);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+#header.compact::after {
+  opacity: 1;
 }
 
 .title {
