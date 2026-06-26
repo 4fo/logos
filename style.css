@@ -44,6 +44,7 @@ body {
   color: var(--fg);
   font-family: 'Rosarivo', serif;
   min-height: 100vh;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   transition: background 0.3s, color 0.3s;
 }
