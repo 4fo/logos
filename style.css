@@ -58,30 +58,21 @@ body {
   z-index: 10;
   padding: 48px 0 24px;
   background: var(--bg);
-  transition: padding 0.2s, background 0.3s;
-}
-
-#header.compact {
-  padding: 8px 0 12px;
+  transition: background 0.3s;
 }
 
 #header::after {
   content: '';
   position: absolute;
-  bottom: -20px;
   left: 0;
   right: 0;
-  height: 20px;
+  top: var(--ft, 0);
+  height: 40px;
   background: var(--bg);
   -webkit-mask-image: linear-gradient(to bottom, black, transparent);
   mask-image: linear-gradient(to bottom, black, transparent);
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-#header.compact::after {
-  opacity: 1;
+  opacity: var(--fo, 0);
 }
 
 .title {
@@ -95,7 +86,7 @@ body {
   font-weight: 400;
   position: relative;
   z-index: 6;
-  transition: font-size 0.2s, opacity 0.2s, margin-bottom 0.2s, letter-spacing 0.2s, color 0.3s;
+  transition: color 0.3s;
 }
 
 #header.compact .title {

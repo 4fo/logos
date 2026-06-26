@@ -234,12 +234,20 @@ window.addEventListener('hashchange', () => {
 });
 
 function onScroll() {
+  const r = Math.min(window.scrollY / 80, 1);
   const h = document.getElementById('header');
-  if (window.scrollY > 80) {
-    h.classList.add('compact');
-  } else if (window.scrollY < 20) {
-    h.classList.remove('compact');
-  }
+  const t = document.querySelector('.title');
+  const pb = 24 - r * 12;
+  h.style.paddingTop = (48 - r * 40) + 'px';
+  h.style.paddingBottom = pb + 'px';
+  const headerTop = h.getBoundingClientRect().top;
+  const searchBottom = document.getElementById('search-container').getBoundingClientRect().bottom;
+  h.style.setProperty('--ft', (searchBottom - headerTop) + 'px');
+  h.style.setProperty('--fo', r);
+  t.style.fontSize = (2 - r * 1.2) + 'rem';
+  t.style.marginBottom = (32 - r * 24) + 'px';
+  t.style.opacity = 0.5 - r * 0.2;
+  t.style.letterSpacing = (6 - r * 3) + 'px';
 }
 window.addEventListener('scroll', onScroll, { passive: true });
 
