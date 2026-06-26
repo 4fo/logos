@@ -49,25 +49,27 @@ body {
 
 #header {
   position: sticky;
-  top: 0;
+  top: 16px;
   z-index: 10;
-  padding: 24px 24px 20px;
   max-width: 680px;
-  margin: 0 auto;
+  margin: 0 auto 0;
+  padding: 20px 24px 16px;
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border-bottom: 1px solid var(--glass-border);
+  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 #chapter-badge {
   text-align: center;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--chapter-heading);
-  margin: 2px 0 8px;
+  margin: 2px 0 6px;
 }
 
 #chapter-badge:empty {
@@ -76,14 +78,13 @@ body {
 
 .title {
   text-align: center;
-  font-size: 1.4rem;
-  letter-spacing: 6px;
+  font-size: 1.2rem;
+  letter-spacing: 5px;
   text-transform: uppercase;
   color: var(--fg);
-  opacity: 0.5;
-  margin-bottom: 2px;
+  opacity: 0.4;
+  margin-bottom: 4px;
   font-weight: 400;
-  transition: color 0.3s;
 }
 
 #search-container {
@@ -224,7 +225,7 @@ body {
 }
 
 @media (max-width: 480px) {
-  #header { padding-left: 16px; padding-right: 16px; }
+  #header { padding: 16px; }
   #results { padding: 0 16px 80px; }
   #search-input { padding: 12px 18px; font-size: 0.9rem; }
   .result-text { font-size: 1.05rem; }
