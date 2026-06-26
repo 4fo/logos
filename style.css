@@ -1,12 +1,47 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+:root {
+  --bg: #0a0a0a;
+  --fg: #e0e0e0;
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-focus: rgba(255, 255, 255, 0.18);
+  --glass-shadow: rgba(255, 255, 255, 0.08);
+  --placeholder: rgba(255, 255, 255, 0.2);
+  --result-text: rgba(255, 255, 255, 0.88);
+  --result-ref: rgba(255, 255, 255, 0.25);
+  --result-ref-hover: rgba(255, 255, 255, 0.45);
+  --highlight-bg: rgba(255, 255, 255, 0.06);
+  --highlight-text: #fff;
+  --chapter-heading: rgba(255, 255, 255, 0.15);
+  --search-color: #fff;
+}
+
+body.light {
+  --bg: #f5f2ed;
+  --fg: #1a1a1a;
+  --glass-bg: rgba(0, 0, 0, 0.03);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-focus: rgba(0, 0, 0, 0.15);
+  --glass-shadow: rgba(0, 0, 0, 0.06);
+  --placeholder: rgba(0, 0, 0, 0.2);
+  --result-text: rgba(0, 0, 0, 0.85);
+  --result-ref: rgba(0, 0, 0, 0.25);
+  --result-ref-hover: rgba(0, 0, 0, 0.45);
+  --highlight-bg: rgba(0, 0, 0, 0.06);
+  --highlight-text: #000;
+  --chapter-heading: rgba(0, 0, 0, 0.2);
+  --search-color: #000;
+}
+
 body {
-  background: #0a0a0a;
-  color: #e0e0e0;
+  background: var(--bg);
+  color: var(--fg);
   font-family: 'EB Garamond', serif;
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  transition: background 0.3s, color 0.3s;
 }
 
 #app {
@@ -14,9 +49,13 @@ body {
   margin: 0 auto;
   padding: 48px 24px 120px;
   min-height: 100vh;
+  position: relative;
 }
 
 #search-container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
   position: sticky;
   top: 16px;
   z-index: 10;
@@ -24,30 +63,52 @@ body {
 }
 
 #search-input {
-  width: 100%;
-  background: rgba(255, 255, 255, 0.04);
+  flex: 1;
+  background: var(--glass-bg);
   backdrop-filter: blur(40px) saturate(1.2);
   -webkit-backdrop-filter: blur(40px) saturate(1.2);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--glass-border);
   border-radius: 100px;
   padding: 14px 24px;
-  color: #fff;
+  color: var(--search-color);
   font-size: 0.95rem;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-weight: 400;
   outline: none;
   letter-spacing: 0.01em;
-  transition: border-color 0.25s, box-shadow 0.25s;
+  transition: border-color 0.25s, box-shadow 0.25s, background 0.3s, color 0.3s;
 }
 
 #search-input:focus {
-  border-color: rgba(255, 255, 255, 0.18);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  border-color: var(--glass-focus);
+  box-shadow: 0 0 0 1px var(--glass-shadow);
 }
 
 #search-input::placeholder {
-  color: rgba(255, 255, 255, 0.2);
+  color: var(--placeholder);
   font-weight: 300;
+}
+
+#theme-toggle {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px) saturate(1.2);
+  -webkit-backdrop-filter: blur(40px) saturate(1.2);
+  color: var(--fg);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.25s, background 0.3s, color 0.3s;
+}
+
+#theme-toggle:hover {
+  border-color: var(--glass-focus);
 }
 
 #results {
@@ -69,37 +130,47 @@ body {
 .result-text {
   font-size: 1.2rem;
   line-height: 1.75;
-  color: rgba(255, 255, 255, 0.88);
+  color: var(--result-text);
   margin-bottom: 2px;
+  transition: color 0.3s;
 }
 
 .result-ref {
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.25);
+  color: var(--result-ref);
   font-style: italic;
   transition: color 0.2s;
 }
 
 .result-item:hover .result-ref {
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--result-ref-hover);
 }
 
 .result-highlight {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.06);
+  color: var(--highlight-text);
+  background: var(--highlight-bg);
   padding: 0 2px;
   border-radius: 2px;
   font-weight: 500;
+  transition: background 0.3s, color 0.3s;
 }
 
 .chapter-heading {
   text-align: center;
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.15);
+  color: var(--chapter-heading);
   letter-spacing: 3px;
   text-transform: uppercase;
   margin-bottom: 44px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  transition: color 0.3s;
+}
+
+.error-msg {
+  color: var(--result-ref);
+  text-align: center;
+  padding: 40px;
+  font-size: 0.9rem;
 }
 
 @keyframes fadeUp {

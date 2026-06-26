@@ -13,7 +13,7 @@ function parseRef(ref) {
 
 function showError(msg) {
   const container = document.getElementById('results');
-  container.innerHTML = `<div style="color:rgba(255,255,255,0.5);text-align:center;padding:40px;font-size:0.9rem">${msg}</div>`;
+  container.innerHTML = `<div class="error-msg">${msg}</div>`;
 }
 
 async function loadBible() {
@@ -148,6 +148,20 @@ function renderEntries(entries, mode) {
     container.appendChild(el);
   });
 }
+
+function applyTheme(light) {
+  document.body.classList.toggle('light', light);
+  document.getElementById('theme-toggle').textContent = light ? '\u{1F31B}' : '\u{1F319}';
+}
+
+const saved = localStorage.getItem('logos-theme');
+if (saved === 'light') applyTheme(true);
+
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const light = document.body.classList.toggle('light');
+  localStorage.setItem('logos-theme', light ? 'light' : 'dark');
+  document.getElementById('theme-toggle').textContent = light ? '\u{1F31B}' : '\u{1F319}';
+});
 
 const input = document.getElementById('search-input');
 input.addEventListener('input', doSearch);
