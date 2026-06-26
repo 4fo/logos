@@ -233,14 +233,4 @@ window.addEventListener('hashchange', () => {
   if (m) loadChapter(`${m[1].replace(/_/g, ' ')} ${m[2]}:${m[3]}`);
 });
 
-let compacting = false;
-window.addEventListener('scroll', () => {
-  const h = document.getElementById('header');
-  const should = window.scrollY > 0;
-  if (compacting !== should) {
-    compacting = should;
-    h.classList.toggle('compact', should);
-  }
-}, { passive: true });
-
 loadBible();
