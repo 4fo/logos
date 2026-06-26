@@ -88,6 +88,12 @@ function showRandomVerse() {
   if (!verseList.length) { showError('No verses loaded.'); return; }
   const entry = verseList[Math.floor(Math.random() * verseList.length)];
   renderEntries([entry], 'home');
+  setChapterBadge(entry.ref);
+}
+
+function setChapterBadge(ref) {
+  const p = parseRef(ref);
+  document.getElementById('chapter-badge').textContent = p ? `${p.book} ${p.chapter}` : '';
 }
 
 function doSearch() {
@@ -96,6 +102,7 @@ function doSearch() {
     if (!ready) return;
     const q = document.getElementById('search-input').value.trim();
     if (!q) { showRandomVerse(); return; }
+    document.getElementById('chapter-badge').textContent = '';
     const ids = searchIndex.search(q);
     ids.sort((a, b) => refScore(verseList[b].ref, q) - refScore(verseList[a].ref, q) || a - b);
     renderEntries(ids.map(id => ({
@@ -219,8 +226,9 @@ document.addEventListener('keydown', e => {
     input.focus();
   }
   if (e.key === 'Escape') {
-    input.value = '';
-    clearBtn.classList.remove('visible');
+  input.value = '';
+  clearBtn.classList.remove('visible');
+  setChapterBadge(ref);
     if (ready) showRandomVerse();
     input.blur();
   }

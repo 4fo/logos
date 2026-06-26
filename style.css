@@ -70,7 +70,47 @@ body {
 }
 
 #header.compact {
-  padding: 8px 0 12px;
+  padding: 8px 0 0;
+}
+
+#header::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: var(--bg);
+  -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+  mask-image: linear-gradient(to bottom, black, transparent);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+#header.compact::after {
+  opacity: 1;
+}
+
+#chapter-badge {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--chapter-heading);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+#header.compact #chapter-badge {
+  opacity: 1;
 }
 
 .title {
