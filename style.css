@@ -58,7 +58,7 @@ body {
   top: 16px;
   z-index: 10;
   max-width: 680px;
-  margin: 0 auto 24px;
+  margin: 0 auto 48px;
   padding: 20px 24px 16px;
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
