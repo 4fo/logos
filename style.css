@@ -3,13 +3,13 @@
 :root {
   --bg: #0a0a0a;
   --fg: #e0e0e0;
-  --glass-bg: rgba(255, 255, 255, 0.12);
+  --glass-bg: linear-gradient(180deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 100%);
   --glass-fill: rgba(255, 255, 255, 0.15);
   --glass-border: rgba(255, 255, 255, 0.18);
-  --glass-blur: blur(40px) saturate(1.8);
+  --glass-blur: blur(16px) saturate(1.4);
   --glass-focus: rgba(255, 255, 255, 0.25);
   --glass-shadow: rgba(255, 255, 255, 0.10);
-  --bevel-top: rgba(255, 255, 255, 0.10);
+  --bevel-top: rgba(255, 255, 255, 0.12);
   --bevel-bottom: rgba(255, 255, 255, 0.04);
   --pill-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
   --placeholder: rgba(255, 255, 255, 0.2);
@@ -25,12 +25,12 @@
 body.light {
   --bg: #f5f2ed;
   --fg: #1a1a1a;
-  --glass-bg: rgba(0, 0, 0, 0.08);
+  --glass-bg: linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.06) 50%, rgba(0,0,0,0.03) 100%);
   --glass-fill: rgba(0, 0, 0, 0.10);
   --glass-border: rgba(0, 0, 0, 0.12);
   --glass-focus: rgba(0, 0, 0, 0.18);
   --glass-shadow: rgba(0, 0, 0, 0.08);
-  --bevel-top: rgba(255, 255, 255, 0.15);
+  --bevel-top: rgba(255, 255, 255, 0.18);
   --bevel-bottom: rgba(0, 0, 0, 0.05);
   --pill-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   --placeholder: rgba(0, 0, 0, 0.2);
