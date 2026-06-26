@@ -61,18 +61,8 @@ body {
   transition: background 0.3s;
 }
 
-#header::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: var(--ft, 0);
-  height: 40px;
-  background: var(--bg);
-  -webkit-mask-image: linear-gradient(to bottom, black, transparent);
-  mask-image: linear-gradient(to bottom, black, transparent);
-  pointer-events: none;
-  opacity: var(--fo, 0);
+#header.compact {
+  padding: 8px 0 12px;
 }
 
 .title {
