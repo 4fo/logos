@@ -132,14 +132,6 @@ function renderEntries(entries, mode) {
   const container = document.getElementById('results');
   container.innerHTML = '';
 
-  if (mode === 'chapter') {
-    const p = parseRef(entries[0].ref);
-    const h = document.createElement('div');
-    h.className = 'chapter-heading';
-    h.textContent = `${p.book} ${p.chapter}`;
-    container.appendChild(h);
-  }
-
   entries.forEach((entry, i) => {
     const el = document.createElement('div');
     el.className = 'result-item';
