@@ -235,7 +235,11 @@ window.addEventListener('hashchange', () => {
 
 function onScroll() {
   const h = document.getElementById('header');
-  h.classList.toggle('compact', window.scrollY > 50);
+  if (window.scrollY > 80) {
+    h.classList.add('compact');
+  } else if (window.scrollY < 20) {
+    h.classList.remove('compact');
+  }
 }
 window.addEventListener('scroll', onScroll, { passive: true });
 

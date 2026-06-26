@@ -57,7 +57,10 @@ body {
   top: 0;
   z-index: 10;
   padding: 48px 0 24px;
-  transition: padding 0.2s;
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px) saturate(1.2);
+  -webkit-backdrop-filter: blur(40px) saturate(1.2);
+  transition: padding 0.2s, background 0.3s;
 }
 
 #header.compact {
