@@ -61,9 +61,20 @@ body::before {
 #app {
   max-width: 680px;
   margin: 0 auto;
-  padding: 48px 24px 120px;
+  padding: 0 24px 120px;
   min-height: 100vh;
   position: relative;
+}
+
+#header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 48px 0 24px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px) saturate(1.2);
+  -webkit-backdrop-filter: blur(40px) saturate(1.2);
+  transition: background 0.3s;
 }
 
 .title {
@@ -75,17 +86,22 @@ body::before {
   opacity: 0.5;
   margin-bottom: 32px;
   font-weight: 400;
-  transition: color 0.3s, opacity 0.3s;
+  position: relative;
+  z-index: 6;
+  transition: font-size 0.2s, opacity 0.2s, margin-bottom 0.2s, letter-spacing 0.2s, color 0.3s;
+}
+
+#header.compact .title {
+  font-size: 0.8rem;
+  opacity: 0.3;
+  margin-bottom: 8px;
+  letter-spacing: 3px;
 }
 
 #search-container {
   display: flex;
   gap: 8px;
   align-items: center;
-  position: sticky;
-  top: 16px;
-  z-index: 10;
-  margin-bottom: 48px;
 }
 
 #search-input {
@@ -228,8 +244,8 @@ body::before {
 }
 
 @media (max-width: 480px) {
-  #app { padding: 28px 16px 80px; }
-  #search-container { margin-bottom: 32px; }
+  #app { padding: 0 16px 80px; }
+  #search-container { margin-bottom: 0; }
   #search-input { padding: 12px 18px; font-size: 0.9rem; }
   .result-text { font-size: 1.05rem; }
 }

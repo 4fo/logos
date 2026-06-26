@@ -233,4 +233,10 @@ window.addEventListener('hashchange', () => {
   if (m) loadChapter(`${m[1].replace(/_/g, ' ')} ${m[2]}:${m[3]}`);
 });
 
+function onScroll() {
+  const h = document.getElementById('header');
+  h.classList.toggle('compact', window.scrollY > 50);
+}
+window.addEventListener('scroll', onScroll, { passive: true });
+
 loadBible();
