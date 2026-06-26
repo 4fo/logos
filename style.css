@@ -81,7 +81,7 @@ body {
   -webkit-backdrop-filter: blur(40px) saturate(1.2);
   border: 1px solid var(--glass-border);
   border-radius: 100px;
-  padding: 14px 24px;
+  padding: 14px 40px 14px 24px;
   color: var(--search-color);
   font-size: 0.95rem;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -99,6 +99,29 @@ body {
 #search-input::placeholder {
   color: var(--placeholder);
   font-weight: 300;
+}
+
+#search-clear {
+  position: absolute;
+  right: 52px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--placeholder);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 8px;
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+  z-index: 2;
+}
+
+#search-clear.visible {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 #theme-toggle {

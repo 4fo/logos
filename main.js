@@ -52,6 +52,7 @@ async function loadBible() {
     searchIndex = idx;
 
     ready = true;
+    input.focus();
 
     const hash = location.hash.slice(1);
     if (hash) {
@@ -100,7 +101,8 @@ function loadChapter(ref) {
 
   const hash = `#${p.book.replace(/\s/g, '_')}-${p.chapter}-${ch[0].verse}`;
   history.pushState(null, '', hash);
-  document.getElementById('search-input').value = '';
+  input.value = '';
+  clearBtn.classList.remove('visible');
 }
 
 function renderEntries(entries, mode) {
@@ -174,12 +176,26 @@ document.getElementById('theme-toggle').addEventListener('click', () => {
 document.querySelector('.title').addEventListener('click', () => {
   if (!ready) return;
   document.getElementById('search-input').value = '';
+  clearBtn.classList.remove('visible');
   history.pushState(null, '', window.location.pathname);
   showRandomVerse();
 });
 
 const input = document.getElementById('search-input');
 input.addEventListener('input', doSearch);
+
+const clearBtn = document.getElementById('search-clear');
+
+input.addEventListener('input', () => {
+  clearBtn.classList.toggle('visible', input.value.length > 0);
+});
+
+clearBtn.addEventListener('click', () => {
+  input.value = '';
+  clearBtn.classList.remove('visible');
+  if (ready) showRandomVerse();
+  input.focus();
+});
 
 document.addEventListener('keydown', e => {
   if (e.key === '/' && document.activeElement !== input) {
@@ -188,6 +204,7 @@ document.addEventListener('keydown', e => {
   }
   if (e.key === 'Escape') {
     input.value = '';
+    clearBtn.classList.remove('visible');
     if (ready) showRandomVerse();
     input.blur();
   }
