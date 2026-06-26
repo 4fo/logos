@@ -60,6 +60,7 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: contain;
   transition: background 0.3s, color 0.3s;
 }
 
