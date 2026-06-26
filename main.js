@@ -126,6 +126,7 @@ function loadChapter(ref) {
   history.pushState(null, '', hash);
   input.value = '';
   clearBtn.classList.remove('visible');
+  setChapterBadge(ref);
 }
 
 function renderEntries(entries, mode) {

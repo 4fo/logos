@@ -105,6 +105,12 @@ body {
   color: var(--chapter-heading);
   pointer-events: none;
   z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+#header.compact #chapter-badge {
+  opacity: 1;
 }
 
 #chapter-badge:empty {
