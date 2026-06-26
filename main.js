@@ -163,6 +163,13 @@ document.getElementById('theme-toggle').addEventListener('click', () => {
   document.getElementById('theme-toggle').textContent = light ? '\u{1F31B}' : '\u{1F319}';
 });
 
+document.querySelector('.title').addEventListener('click', () => {
+  if (!ready) return;
+  document.getElementById('search-input').value = '';
+  history.pushState(null, '', window.location.pathname);
+  showRandomVerse();
+});
+
 const input = document.getElementById('search-input');
 input.addEventListener('input', doSearch);
 
