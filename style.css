@@ -4,15 +4,15 @@
   --bg: #0a0a0a;
   --fg: #e0e0e0;
   --glass-bg:
-    radial-gradient(ellipse at 30% 0%, rgba(255,255,255,0.12) 0%, transparent 70%),
-    radial-gradient(ellipse at 70% 0%, rgba(255,255,255,0.08) 0%, transparent 60%),
-    linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
-  --glass-fill: rgba(255, 255, 255, 0.10);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-blur: blur(16px) saturate(1.4);
+    radial-gradient(ellipse at 30% 0%, rgba(255,255,255,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse at 70% 0%, rgba(255,255,255,0.04) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  --glass-fill: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: blur(9px) saturate(1.2);
   --glass-focus: rgba(255, 255, 255, 0.17);
   --glass-shadow: rgba(255, 255, 255, 0.06);
-  --bevel-top: rgba(255, 255, 255, 0.15);
+  --bevel-top: rgba(255, 255, 255, 0.08);
   --bevel-bottom: rgba(255, 255, 255, 0.03);
   --pill-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
   --placeholder: rgba(255, 255, 255, 0.14);
@@ -29,14 +29,14 @@ body.light {
   --bg: #f5f2ed;
   --fg: #1a1a1a;
   --glass-bg:
-    radial-gradient(ellipse at 30% 0%, rgba(255,255,255,0.25) 0%, transparent 70%),
-    radial-gradient(ellipse at 70% 0%, rgba(255,255,255,0.18) 0%, transparent 60%),
-    linear-gradient(180deg, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0.01) 100%);
-  --glass-fill: rgba(0, 0, 0, 0.07);
-  --glass-border: rgba(0, 0, 0, 0.09);
+    radial-gradient(ellipse at 30% 0%, rgba(255,255,255,0.15) 0%, transparent 70%),
+    radial-gradient(ellipse at 70% 0%, rgba(255,255,255,0.10) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0.01) 100%);
+  --glass-fill: rgba(0, 0, 0, 0.04);
+  --glass-border: rgba(0, 0, 0, 0.06);
   --glass-focus: rgba(0, 0, 0, 0.13);
   --glass-shadow: rgba(0, 0, 0, 0.06);
-  --bevel-top: rgba(255, 255, 255, 0.30);
+  --bevel-top: rgba(255, 255, 255, 0.15);
   --bevel-bottom: rgba(0, 0, 0, 0.03);
   --pill-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   --placeholder: rgba(0, 0, 0, 0.14);
