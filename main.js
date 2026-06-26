@@ -2,61 +2,76 @@ import Fuse from 'fuse.js';
 
 let verseList = [];
 let bookIndex = {};
-let fuse;
+let fuse = null;
 let debounceTimer;
+let ready = false;
 
 function parseRef(ref) {
   const m = ref.match(/^(.+?)\s+(\d+):(\d+)$/);
   return m ? { book: m[1], chapter: parseInt(m[2]), verse: parseInt(m[3]) } : null;
 }
 
+function showError(msg) {
+  const container = document.getElementById('results');
+  container.innerHTML = `<div style="color:rgba(255,255,255,0.5);text-align:center;padding:40px;font-size:0.9rem">${msg}</div>`;
+}
+
 async function loadBible() {
-  const base = import.meta.env.BASE_URL;
-  const res = await fetch(`${base}data/verses-1769.json`);
-  const data = await res.json();
+  try {
+    const base = import.meta.env.BASE_URL;
+    const res = await fetch(`${base}data/verses-1769.json`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
 
-  verseList = [];
-  const raw = new Map();
+    verseList = [];
+    const raw = new Map();
 
-  for (const [ref, text] of Object.entries(data)) {
-    const p = parseRef(ref);
-    if (!p) continue;
-    verseList.push({ ref, text });
-    if (!raw.has(p.book)) raw.set(p.book, new Map());
-    const chMap = raw.get(p.book);
-    if (!chMap.has(p.chapter)) chMap.set(p.chapter, []);
-    chMap.get(p.chapter).push({ ref, text, verse: p.verse });
-  }
-
-  for (const [ref] of Object.entries(data)) {
-    const p = parseRef(ref);
-    if (!p || bookIndex[p.book]) continue;
-    const chMap = raw.get(p.book);
-    const chapters = {};
-    for (const [num, verses] of chMap) {
-      chapters[num] = verses.sort((a, b) => a.verse - b.verse);
+    for (const [ref, text] of Object.entries(data)) {
+      const p = parseRef(ref);
+      if (!p) continue;
+      verseList.push({ ref, text });
+      if (!raw.has(p.book)) raw.set(p.book, new Map());
+      const chMap = raw.get(p.book);
+      if (!chMap.has(p.chapter)) chMap.set(p.chapter, []);
+      chMap.get(p.chapter).push({ ref, text, verse: p.verse });
     }
-    bookIndex[p.book] = { name: p.book, chapters };
-  }
 
-  fuse = new Fuse(verseList, {
-    keys: ['text', 'ref'],
-    threshold: 0.3,
-    includeMatches: true
-  });
-
-  const hash = location.hash.slice(1);
-  if (hash) {
-    const m = hash.match(/^(.+?)-(\d+)-(\d+)$/);
-    if (m) {
-      loadChapter(`${m[1].replace(/_/g, ' ')} ${m[2]}:${m[3]}`);
-      return;
+    for (const [ref] of Object.entries(data)) {
+      const p = parseRef(ref);
+      if (!p || bookIndex[p.book]) continue;
+      const chMap = raw.get(p.book);
+      const chapters = {};
+      for (const [num, verses] of chMap) {
+        chapters[num] = verses.sort((a, b) => a.verse - b.verse);
+      }
+      bookIndex[p.book] = { name: p.book, chapters };
     }
+
+    fuse = new Fuse(verseList, {
+      keys: ['text', 'ref'],
+      threshold: 0.3,
+      includeMatches: true
+    });
+
+    ready = true;
+
+    const hash = location.hash.slice(1);
+    if (hash) {
+      const m = hash.match(/^(.+?)-(\d+)-(\d+)$/);
+      if (m) {
+        loadChapter(`${m[1].replace(/_/g, ' ')} ${m[2]}:${m[3]}`);
+        return;
+      }
+    }
+    showRandomVerse();
+  } catch (err) {
+    showError(`Error loading data: ${err.message}`);
+    console.error(err);
   }
-  showRandomVerse();
 }
 
 function showRandomVerse() {
+  if (!verseList.length) { showError('No verses loaded.'); return; }
   const entry = verseList[Math.floor(Math.random() * verseList.length)];
   renderEntries([entry], 'home');
 }
@@ -64,6 +79,7 @@ function showRandomVerse() {
 function doSearch() {
   clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => {
+    if (!ready) return;
     const q = document.getElementById('search-input').value.trim();
     if (!q) { showRandomVerse(); return; }
     const results = fuse.search(q);
@@ -74,6 +90,7 @@ function doSearch() {
 }
 
 function loadChapter(ref) {
+  if (!ready) return;
   const p = parseRef(ref);
   if (!p) return;
   const book = bookIndex[p.book];
@@ -142,14 +159,14 @@ document.addEventListener('keydown', e => {
   }
   if (e.key === 'Escape') {
     input.value = '';
-    showRandomVerse();
+    if (ready) showRandomVerse();
     input.blur();
   }
 });
 
 window.addEventListener('hashchange', () => {
   const hash = location.hash.slice(1);
-  if (!hash) { showRandomVerse(); return; }
+  if (!hash) { if (ready) showRandomVerse(); return; }
   const m = hash.match(/^(.+?)-(\d+)-(\d+)$/);
   if (m) loadChapter(`${m[1].replace(/_/g, ' ')} ${m[2]}:${m[3]}`);
 });
