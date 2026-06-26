@@ -11,6 +11,21 @@ function parseRef(ref) {
   return m ? { book: m[1], chapter: parseInt(m[2]), verse: parseInt(m[3]) } : null;
 }
 
+function refScore(ref, query) {
+  const q = query.toLowerCase().trim();
+  const r = ref.toLowerCase();
+  if (r === q) return 5;
+  if (r.startsWith(q)) return 4;
+  const words = q.split(/\s+/);
+  let last = -1;
+  for (const w of words) {
+    const i = r.indexOf(w, last + 1);
+    if (i === -1) return 1;
+    last = i;
+  }
+  return 3;
+}
+
 function showError(msg) {
   const container = document.getElementById('results');
   container.innerHTML = `<div class="error-msg">${msg}</div>`;
@@ -82,6 +97,7 @@ function doSearch() {
     const q = document.getElementById('search-input').value.trim();
     if (!q) { showRandomVerse(); return; }
     const ids = searchIndex.search(q);
+    ids.sort((a, b) => refScore(verseList[b].ref, q) - refScore(verseList[a].ref, q) || a - b);
     renderEntries(ids.map(id => ({
       ref: verseList[id].ref, text: verseList[id].text, highlight: q
     })), 'search');
