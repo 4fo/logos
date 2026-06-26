@@ -3,34 +3,34 @@
 :root {
   --bg: #0a0a0a;
   --fg: #e0e0e0;
-  --glass-bg: rgba(255, 255, 255, 0.04);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-focus: rgba(255, 255, 255, 0.18);
-  --glass-shadow: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.33);
+  --glass-border: rgba(255, 255, 255, 0.09);
+  --glass-focus: rgba(255, 255, 255, 0.33);
+  --glass-shadow: rgba(255, 255, 255, 0.09);
   --placeholder: rgba(255, 255, 255, 0.2);
   --result-text: rgba(255, 255, 255, 0.88);
   --result-ref: rgba(255, 255, 255, 0.33);
   --result-ref-hover: rgba(255, 255, 255, 0.66);
   --highlight-bg: rgba(255, 255, 255, 0.06);
   --highlight-text: #fff;
-  --chapter-heading: rgba(255, 255, 255, 0.15);
+  --chapter-heading: rgba(255, 255, 255, 0.33);
   --search-color: #fff;
 }
 
 body.light {
   --bg: #f5f2ed;
   --fg: #1a1a1a;
-  --glass-bg: rgba(0, 0, 0, 0.03);
-  --glass-border: rgba(0, 0, 0, 0.08);
-  --glass-focus: rgba(0, 0, 0, 0.15);
-  --glass-shadow: rgba(0, 0, 0, 0.06);
+  --glass-bg: rgba(0, 0, 0, 0.33);
+  --glass-border: rgba(0, 0, 0, 0.09);
+  --glass-focus: rgba(0, 0, 0, 0.33);
+  --glass-shadow: rgba(0, 0, 0, 0.09);
   --placeholder: rgba(0, 0, 0, 0.2);
   --result-text: rgba(0, 0, 0, 0.85);
   --result-ref: rgba(0, 0, 0, 0.33);
   --result-ref-hover: rgba(0, 0, 0, 0.66);
   --highlight-bg: rgba(0, 0, 0, 0.06);
   --highlight-text: #000;
-  --chapter-heading: rgba(0, 0, 0, 0.2);
+  --chapter-heading: rgba(0, 0, 0, 0.33);
   --search-color: #000;
 }
 
