@@ -83,10 +83,10 @@ function doSearch() {
     const q = document.getElementById('search-input').value.trim();
     if (!q) { showRandomVerse(); return; }
     const results = fuse.search(q);
-    renderEntries(results.map(r => ({
+    renderEntries(results.slice(0, 20).map(r => ({
       ref: r.item.ref, text: r.item.text, highlight: q
     })), 'search');
-  }, 120);
+  }, 400);
 }
 
 function loadChapter(ref) {
@@ -120,7 +120,6 @@ function renderEntries(entries, mode) {
   entries.forEach((entry, i) => {
     const el = document.createElement('div');
     el.className = 'result-item';
-    el.style.animationDelay = `${i * 24}ms`;
 
     const text = document.createElement('div');
     text.className = 'result-text';
