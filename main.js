@@ -84,7 +84,7 @@ function doSearch() {
     renderEntries(ids.map(id => ({
       ref: verseList[id].ref, text: verseList[id].text, highlight: q
     })), 'search');
-  }, 333);
+  },   99);
 }
 
 function loadChapter(ref) {
