@@ -47,18 +47,23 @@ body {
 body::before {
   content: '';
   position: fixed;
-  top: 62px;
+  top: 0;
   left: 0;
   right: 0;
-  height: 100px;
+  height: 160px;
   z-index: 5;
   background: var(--bg);
-  -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent);
-  mask-image: linear-gradient(to bottom, black 30%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, black 50px, transparent 160px);
+  mask-image: linear-gradient(to bottom, black 50px, transparent 160px);
   pointer-events: none;
   transition: background 0.3s;
 }
 #app {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 48px 24px 120px;
+  min-height: 100vh;
+  position: relative;
 }
 
 .title {
