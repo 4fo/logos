@@ -37,7 +37,7 @@ body.light {
 body {
   background: var(--bg);
   color: var(--fg);
-  font-family: 'EB Garamond', serif;
+  font-family: 'Rosarivo', serif;
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -50,6 +50,18 @@ body {
   padding: 48px 24px 120px;
   min-height: 100vh;
   position: relative;
+}
+
+.title {
+  text-align: center;
+  font-size: 2rem;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--fg);
+  opacity: 0.5;
+  margin-bottom: 32px;
+  font-weight: 400;
+  transition: color 0.3s, opacity 0.3s;
 }
 
 #search-container {
