@@ -20,11 +20,17 @@ A single-page web experience for reading and searching the 1769 King James Versi
   - **Theme**: System / Light / Dark (manual override, persisted)
   - **Layout**: Verse per line / Continuous paragraph (persisted)
   - **Text size**: `−` / `+` controls, 0.7x–1.5x (persisted)
-  - **Typography**: Rosarivo, Baskervville, EB Garamond, Libre Caslon Text, PT Serif, Lora, Literata, Charis SIL, Alegreya (persisted)
+  - **Typography**: selectable typeface (persisted)
 - **Copy verse** — click any verse reference to copy text + reference
 - **Horizontal swipe** (touch) and **shift+scroll** (desktop) for chapter navigation
 - **Deep linking** — URL hash for every verse (`#Genesis_1_1`)
 - **Keyboard shortcuts**: `/` to focus search, `Esc` for random verse
+
+### Details
+
+| | |
+|---|---|
+| Typefaces | Rosarivo, Baskervville, EB Garamond, Libre Caslon Text, PT Serif, Lora, Literata, Charis SIL, Alegreya |
 
 ### Use it
 
