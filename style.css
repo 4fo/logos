@@ -161,11 +161,10 @@ body {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  max-height: 0;
-  overflow: hidden;
+  transform: translateY(-36px);
   transition:
-    opacity 0.12s ease-in 0.33s,
-    max-height 0.45s cubic-bezier(0.4, 0, 0.6, 1),
+    opacity 0.1s ease-in 0.33s,
+    transform 0.45s cubic-bezier(0.65, 0, 0.35, 1),
     visibility 0s linear 0.45s;
 }
 
@@ -173,10 +172,10 @@ body {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  max-height: 280px;
+  transform: translateY(0);
   transition:
-    opacity 0.08s ease-out,
-    max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.1s ease-out 0.1s,
+    transform 0.5s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 #chapter-badge {
