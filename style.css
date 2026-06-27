@@ -124,6 +124,7 @@ body {
   padding: 20px 24px 16px;
   background: transparent;
   border-radius: 16px;
+  overflow: clip;
 }
 
 #header::before {
@@ -163,11 +164,11 @@ body {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: translateY(-80px);
+  transform: translateY(-100%);
   transition:
-    opacity 0.12s ease-in 0.38s,
+    opacity 0.12s ease-in 0.35s,
     transform 0.5s cubic-bezier(0.65, 0, 0.35, 1),
-    visibility 0s linear 0.5s;
+    visibility 0s linear 0.47s;
 }
 
 #settings-panel.visible {
@@ -176,7 +177,7 @@ body {
   pointer-events: auto;
   transform: translateY(0);
   transition:
-    opacity 0.05s ease-out,
+    opacity 0.08s ease-out 0.05s,
     transform 0.5s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
