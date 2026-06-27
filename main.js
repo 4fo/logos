@@ -104,7 +104,7 @@ const layoutToggle = document.getElementById('layout-toggle');
 function applyLayout(l) {
   layout = l;
   localStorage.setItem('logos-layout', l);
-  layoutToggle.textContent = l === 'verse' ? 'Paragraph' : 'Verse per line';
+  layoutToggle.textContent = l === 'verse' ? 'Verse per line' : 'Paragraph';
   if (current) initChapterView(current.book, current.chapter);
 }
 
@@ -144,6 +144,18 @@ function getPrevChapterPos(pos) {
   return null;
 }
 
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('visible');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('visible'), 2200);
+}
+
+function copyVerse(text, ref) {
+  navigator.clipboard.writeText(`${text} \u2014 ${ref}`).then(() => showToast('Verse copied'));
+}
+
 function createDivider(book, chapter) {
   const div = document.createElement('div');
   div.className = 'ch-divider';
@@ -173,8 +185,14 @@ function createChapterBlock(book, chapter) {
     const textDiv = document.createElement('div');
     textDiv.className = 'result-text';
     textDiv.innerHTML = ch.map(e =>
-      `<span class="inline-ref">${e.verse}</span> ${e.text}`
+      `<span class="inline-ref" data-text="${e.text.replace(/"/g, '&quot;')}">${e.verse}</span> ${e.text}`
     ).join(' ');
+    textDiv.addEventListener('click', e => {
+      const span = e.target.closest('.inline-ref');
+      if (!span) return;
+      e.stopPropagation();
+      copyVerse(span.dataset.text, `${book} ${chapter}:${span.textContent}`);
+    });
     item.appendChild(textDiv);
     block.appendChild(item);
   } else {
@@ -187,6 +205,11 @@ function createChapterBlock(book, chapter) {
       const ref = document.createElement('div');
       ref.className = 'result-ref';
       ref.textContent = `\u2014 ${e.ref}`;
+      ref.addEventListener('click', e => {
+        e.stopPropagation();
+        const t = e.currentTarget.parentElement.querySelector('.result-text').textContent;
+        copyVerse(t, e.currentTarget.textContent.replace('\u2014 ', ''));
+      });
       item.appendChild(text);
       item.appendChild(ref);
       block.appendChild(item);
