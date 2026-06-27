@@ -161,6 +161,11 @@ const FONTS = [
   { id: 'baskervville',  label: 'Baskervville' },
   { id: 'eb-garamond',   label: 'EB Garamond' },
   { id: 'libre-caslon',  label: 'Libre Caslon Text' },
+  { id: 'pt-serif',      label: 'PT Serif' },
+  { id: 'lora',          label: 'Lora' },
+  { id: 'literata',      label: 'Literata' },
+  { id: 'charis-sil',    label: 'Charis SIL' },
+  { id: 'alegreya',      label: 'Alegreya' },
 ];
 
 let fontIdx = 0;

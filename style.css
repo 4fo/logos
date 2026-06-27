@@ -211,6 +211,11 @@ body {
 :root[data-font="baskervville"] { --font-family: 'Baskervville', serif; }
 :root[data-font="eb-garamond"] { --font-family: 'EB Garamond', serif; }
 :root[data-font="libre-caslon"] { --font-family: 'Libre Caslon Text', serif; }
+:root[data-font="pt-serif"] { --font-family: 'PT Serif', serif; }
+:root[data-font="lora"] { --font-family: 'Lora', serif; }
+:root[data-font="literata"] { --font-family: 'Literata', serif; }
+:root[data-font="charis-sil"] { --font-family: 'Charis SIL', serif; }
+:root[data-font="alegreya"] { --font-family: 'Alegreya', serif; }
 
 .title {
   text-align: center;
