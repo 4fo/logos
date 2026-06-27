@@ -123,31 +123,13 @@ body {
 
 #header {
   position: sticky;
-  top: 16px;
+  top: 0;
   z-index: 10;
   max-width: 680px;
-  margin: 16px auto 0;
+  margin: 0 auto;
   padding: 20px 24px 16px;
   background: transparent;
   border-radius: 16px;
-}
-
-#header::after {
-  content: '';
-  position: absolute;
-  top: -16px;
-  left: 0;
-  right: 0;
-  height: 16px;
-  background: var(--bg);
-  z-index: 1;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.05s;
-}
-
-#header.covering::after {
-  opacity: 1;
 }
 
 #header::before {
