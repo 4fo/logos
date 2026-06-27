@@ -31,7 +31,7 @@ function parseRef(ref) {
 }
 
 function refScore(ref, query) {
-  const q = query.toLowerCase().trim();
+  const q = query.toLowerCase().trim().replace(/(\d+)\s+(\d+)/g, '$1:$2');
   const r = ref.toLowerCase();
   if (r === q) return 5;
   if (r.startsWith(q)) return 4;
