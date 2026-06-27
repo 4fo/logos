@@ -562,7 +562,7 @@ body {
 /* Toast */
 #toast {
   position: fixed;
-  bottom: 40px;
+  bottom: 33%;
   left: 50%;
   z-index: 100;
   padding: 10px 24px;
