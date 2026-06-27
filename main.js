@@ -14,35 +14,67 @@ let searchCursor = 0;
 let searchSentinel = null;
 let searchObserver = null;
 let searchReady = false;
+let chapterTransition = false;
 const BATCH_SIZE = 30;
 
-const chObserver = new IntersectionObserver(entries => {
-  for (const entry of entries) {
-    if (entry.isIntersecting) {
-      const block = entry.target;
-      setChapterBadge(`${block.dataset.book} ${block.dataset.chapter}:1`);
+let chObserver = null;
+
+function setupChObserver() {
+  const header = document.querySelector('#header');
+  if (!header || !container) return;
+  if (chObserver) chObserver.disconnect();
+  const headerBottom = header.getBoundingClientRect().bottom;
+  const band = 16;
+  const top = -headerBottom;
+  const bottom = -(window.innerHeight - headerBottom - band);
+  chObserver = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        const block = entry.target;
+        setChapterBadge(`${block.dataset.book} ${block.dataset.chapter}:1`);
+      }
     }
-  }
-}, { rootMargin: '-80px 0px -85% 0px' });
+  }, { rootMargin: `${top}px 0px ${bottom}px 0px` });
+  document.querySelectorAll('.chapter-block').forEach(block => chObserver.observe(block));
+}
+
+let _resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(_resizeTimer);
+  _resizeTimer = setTimeout(setupChObserver, 200);
+});
 
 function parseRef(ref) {
   const m = ref.match(/^(.+?)\s+(\d+):(\d+)$/);
   return m ? { book: m[1], chapter: parseInt(m[2]), verse: parseInt(m[3]) } : null;
 }
 
-function refScore(ref, query) {
+function refScore(ref, text, query) {
   const q = query.toLowerCase().trim().replace(/(\d+)\s+(\d+)/g, '$1:$2');
   const r = ref.toLowerCase();
-  if (r === q) return 5;
-  if (r.startsWith(q)) return 4;
+  if (r === q) return 7;
+  if (r.startsWith(q)) {
+    const after = r.slice(q.length);
+    if (!after || after.startsWith(':')) return 6;
+  }
   const words = q.split(/\s+/);
   let last = -1;
   for (const w of words) {
     const i = r.indexOf(w, last + 1);
-    if (i === -1) return 1;
+    if (i === -1) {
+      const t = text.toLowerCase();
+      if (t.includes(q)) return 4;
+      let tl = -1;
+      for (const w2 of words) {
+        const ti = t.indexOf(w2, tl + 1);
+        if (ti === -1) return 1;
+        tl = ti;
+      }
+      return 3;
+    }
     last = i;
   }
-  return 3;
+  return 5;
 }
 
 function showError(msg) {
@@ -118,6 +150,32 @@ layoutToggle.addEventListener('click', () => {
   applyLayout(layout === 'verse' ? 'paragraph' : 'verse');
 });
 applyLayout(layout);
+
+// ─── Font toggle ─────────────────────────────────────────
+
+const FONTS = [
+  { id: 'rosarivo',      label: 'Rosarivo' },
+  { id: 'baskervville',  label: 'Baskervville' },
+  { id: 'eb-garamond',   label: 'EB Garamond' },
+  { id: 'libre-caslon',  label: 'Libre Caslon Text' },
+];
+
+let fontIdx = 0;
+const saved = localStorage.getItem('logos-font');
+if (saved) { const i = FONTS.findIndex(f => f.id === saved); if (i !== -1) fontIdx = i; }
+
+const fontToggle = document.getElementById('font-toggle');
+
+function applyFont(idx) {
+  fontIdx = idx;
+  const f = FONTS[idx];
+  document.documentElement.dataset.font = f.id;
+  fontToggle.textContent = f.label;
+  localStorage.setItem('logos-font', f.id);
+}
+
+fontToggle.addEventListener('click', () => applyFont((fontIdx + 1) % FONTS.length));
+applyFont(fontIdx);
 
 // ─── Chapter helpers ────────────────────────────────────
 
@@ -244,15 +302,20 @@ function animateBlockItems(block) {
 }
 
 function initChapterView(book, chapter) {
+  chapterTransition = true;
   container.innerHTML = '';
   renderedChapters = [];
+  window.scrollTo(0, 0);
   current = { book, chapter };
   const block = createChapterBlock(book, chapter);
-  if (!block) return;
+  if (!block) { chapterTransition = false; return; }
   container.appendChild(block);
   renderedChapters.push({ book, chapter });
   chObserver.observe(block);
-  requestAnimationFrame(() => animateBlockItems(block));
+  requestAnimationFrame(() => {
+    animateBlockItems(block);
+    chapterTransition = false;
+  });
 }
 
 function appendChapter(pos, where) {
@@ -274,6 +337,7 @@ function appendChapter(pos, where) {
 
 async function loadBible() {
   container = document.getElementById('results');
+  setupChObserver();
 
   let touchStartX = 0, touchStartY = 0;
   container.addEventListener('touchstart', e => {
@@ -363,6 +427,7 @@ function showRandomVerse() {
   current = null;
   renderedChapters = [];
   const entry = verseList[Math.floor(Math.random() * verseList.length)];
+  window.scrollTo(0, 0);
   container.innerHTML = '';
   renderEntries([entry], 'home');
   setChapterBadge(entry.ref);
@@ -384,11 +449,12 @@ function doSearch() {
     renderedChapters = [];
     document.getElementById('chapter-badge').textContent = '';
     const ids = searchIndex.search(q);
-    ids.sort((a, b) => refScore(verseList[b].ref, q) - refScore(verseList[a].ref, q) || a - b);
+    ids.sort((a, b) => refScore(verseList[b].ref, verseList[b].text, q) - refScore(verseList[a].ref, verseList[a].text, q) || a - b);
     searchResults = ids.map(id => ({
       ref: verseList[id].ref, text: verseList[id].text, highlight: q
     }));
     searchCursor = 0;
+    window.scrollTo(0, 0);
     container.innerHTML = '';
     appendSearchBatch();
   }, 99);
@@ -529,12 +595,12 @@ function appendSearchBatch() {
 // ─── Infinite scroll ────────────────────────────────────
 
 window.addEventListener('scroll', () => {
-  if (!current || isFetching) return;
+  if (chapterTransition || !current || isFetching) return;
   const { scrollY } = window;
   const scrollH = document.documentElement.scrollHeight;
   const clientH = document.documentElement.clientHeight;
 
-  if (scrollY + clientH >= scrollH - 400) {
+  if (scrollY > 100 && scrollY + clientH >= scrollH - 400) {
     const next = getNextChapterPos(renderedChapters[renderedChapters.length - 1]);
     if (next) {
       isFetching = true;

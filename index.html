@@ -6,7 +6,7 @@
   <title>LOGOS</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>📖</text></svg>">
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Rosarivo:ital@0;1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rosarivo:ital@0;1&family=Baskervville:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div id="header">
@@ -24,24 +24,34 @@
         <span class="settings-title">Settings</span>
         <button id="settings-close" aria-label="Close settings">✕</button>
       </div>
-      <div class="setting-row">
-        <label>Theme</label>
-        <div class="theme-pills">
-          <button class="pill active" data-theme="system">System</button>
-          <button class="pill" data-theme="light">Light</button>
-          <button class="pill" data-theme="dark">Dark</button>
+      <div class="setting-group">
+        <div class="setting-row">
+          <label>Theme</label>
+          <div class="theme-pills">
+            <button class="pill active" data-theme="system">System</button>
+            <button class="pill" data-theme="light">Light</button>
+            <button class="pill" data-theme="dark">Dark</button>
+          </div>
         </div>
       </div>
-      <div class="setting-row">
-        <label>Layout</label>
-        <button id="layout-toggle" class="toggle-btn">Paragraph</button>
+      <div class="setting-group">
+        <div class="setting-row">
+          <label>Layout</label>
+          <button id="layout-toggle" class="toggle-btn">Paragraph</button>
+        </div>
+        <div class="setting-row">
+          <label>Text size</label>
+          <div class="size-controls">
+            <button id="size-down">−</button>
+            <span id="size-display">100%</span>
+            <button id="size-up">+</button>
+          </div>
+        </div>
       </div>
-      <div class="setting-row">
-        <label>Text size</label>
-        <div class="size-controls">
-          <button id="size-down">−</button>
-          <span id="size-display">100%</span>
-          <button id="size-up">+</button>
+      <div class="setting-group">
+        <div class="setting-row">
+          <label>Typography</label>
+          <button id="font-toggle" class="toggle-btn">Rosarivo</button>
         </div>
       </div>
     </div>
