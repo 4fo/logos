@@ -252,7 +252,7 @@ function showToast(msg) {
 }
 
 function copyVerse(text, ref) {
-  navigator.clipboard.writeText(`${text} \u2014 ${ref}`).then(() => showToast('Verse copied'));
+  navigator.clipboard.writeText(`${text} \u2014 ${ref}`).then(() => showToast(`${ref} copied`));
 }
 
 function createDivider(book, chapter) {
