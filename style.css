@@ -171,9 +171,9 @@ body {
   pointer-events: none;
   transform: translateY(-100%);
   transition:
-    opacity 0.12s ease-in 0.35s,
+    opacity 0.1s ease-in 0.4s,
     transform 0.5s cubic-bezier(0.65, 0, 0.35, 1),
-    visibility 0s linear 0.47s;
+    visibility 0s linear 0.5s;
 }
 
 #settings-panel.visible {
@@ -182,7 +182,7 @@ body {
   pointer-events: auto;
   transform: translateY(0);
   transition:
-    opacity 0.08s ease-out 0.05s,
+    opacity 0.1s ease-out 0s,
     transform 0.5s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
