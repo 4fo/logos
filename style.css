@@ -24,7 +24,7 @@
   --chapter-heading: rgba(255, 255, 255, 0.45);
   --search-color: #fff;
   --text-scale: 1;
-  --glow-color: rgba(255, 255, 255, 0.5);
+  --glow-color: #fff;
 }
 
 @media (prefers-color-scheme: light) {
@@ -50,7 +50,7 @@
     --highlight-text: #000;
     --chapter-heading: rgba(0, 0, 0, 0.45);
     --search-color: #000;
-    --glow-color: #c9a94e;
+    --glow-color: #f0c940;
   }
 }
 
@@ -76,7 +76,7 @@
   --highlight-text: #000;
   --chapter-heading: rgba(0, 0, 0, 0.45);
   --search-color: #000;
-  --glow-color: #c9a94e;
+  --glow-color: #f0c940;
 }
 
 :root.dark {
@@ -101,7 +101,7 @@
   --highlight-text: #fff;
   --chapter-heading: rgba(255, 255, 255, 0.45);
   --search-color: #fff;
-  --glow-color: rgba(255, 255, 255, 0.6);
+  --glow-color: #fff;
 }
 
 body {
