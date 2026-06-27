@@ -142,15 +142,17 @@ body {
     inset 0 -0.5px 0 var(--bevel-bottom),
     var(--pill-shadow);
   pointer-events: none;
-  z-index: -1;
+  z-index: 1;
 }
+
+.header-content { position: relative; z-index: 2; }
 
 #settings-panel {
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
-  z-index: 9;
+  z-index: 0;
   margin-top: 4px;
   padding: 16px 24px;
   background: var(--glass-bg);
@@ -161,11 +163,11 @@ body {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: translateY(-36px);
+  transform: translateY(-80px);
   transition:
-    opacity 0.1s ease-in 0.33s,
-    transform 0.45s cubic-bezier(0.65, 0, 0.35, 1),
-    visibility 0s linear 0.45s;
+    opacity 0.12s ease-in 0.38s,
+    transform 0.5s cubic-bezier(0.65, 0, 0.35, 1),
+    visibility 0s linear 0.5s;
 }
 
 #settings-panel.visible {
@@ -174,7 +176,7 @@ body {
   pointer-events: auto;
   transform: translateY(0);
   transition:
-    opacity 0.1s ease-out 0.1s,
+    opacity 0.05s ease-out,
     transform 0.5s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
