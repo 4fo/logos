@@ -10,6 +10,15 @@ let container;
 let renderedChapters = [];
 let isFetching = false;
 
+const chObserver = new IntersectionObserver(entries => {
+  for (const entry of entries) {
+    if (entry.isIntersecting) {
+      const block = entry.target;
+      setChapterBadge(`${block.dataset.book} ${block.dataset.chapter}:1`);
+    }
+  }
+}, { rootMargin: '-80px 0px -85% 0px' });
+
 function parseRef(ref) {
   const m = ref.match(/^(.+?)\s+(\d+):(\d+)$/);
   return m ? { book: m[1], chapter: parseInt(m[2]), verse: parseInt(m[3]) } : null;
@@ -212,6 +221,7 @@ function initChapterView(book, chapter) {
   if (!block) return;
   container.appendChild(block);
   renderedChapters.push({ book, chapter });
+  chObserver.observe(block);
   requestAnimationFrame(() => animateBlockItems(block));
 }
 
@@ -226,6 +236,7 @@ function appendChapter(pos, where) {
     container.appendChild(block);
     renderedChapters.push(pos);
   }
+  chObserver.observe(block);
   requestAnimationFrame(() => animateBlockItems(block));
 }
 
