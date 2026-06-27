@@ -9,6 +9,12 @@ let current = null;
 let container;
 let renderedChapters = [];
 let isFetching = false;
+let searchResults = [];
+let searchCursor = 0;
+let searchSentinel = null;
+let searchObserver = null;
+let searchReady = false;
+const BATCH_SIZE = 30;
 
 const chObserver = new IntersectionObserver(entries => {
   for (const entry of entries) {
@@ -224,9 +230,10 @@ function animateBlockItems(block) {
   const viewH = window.innerHeight;
   let visible = 0;
   items.forEach(el => {
+    const top = el.getBoundingClientRect().top;
     el.style.animation = 'none';
     el.getBoundingClientRect();
-    if (el.getBoundingClientRect().top < viewH) {
+    if (top < viewH && top > 130) {
       el.style.animation = 'fadeUp 0.4s ease forwards';
       el.style.animationDelay = `${visible++ * 33}ms`;
     } else {
@@ -328,22 +335,20 @@ async function loadBible() {
       bookIndex[p.book] = { name: p.book, chapters };
     }
 
-    const idx = new FlexSearch.Index({ tokenize: 'forward' });
-    verseList.forEach((v, i) => idx.add(i, `${v.ref} ${v.text}`));
-    searchIndex = idx;
-
     ready = true;
     input.focus();
 
     const hash = location.hash.slice(1);
     if (hash) {
       const m = hash.match(/^(.+?)-(\d+)-(\d+)$/);
-      if (m) {
-        loadChapter(`${m[1].replace(/_/g, ' ')} ${m[2]}:${m[3]}`);
-        return;
-      }
+      if (m) loadChapter(`${m[1].replace(/_/g, ' ')} ${m[2]}:${m[3]}`);
     }
-    showRandomVerse();
+    if (!current) showRandomVerse();
+
+    const idx = new FlexSearch.Index({ tokenize: 'forward' });
+    verseList.forEach((v, i) => idx.add(i, `${v.ref} ${v.text}`));
+    searchIndex = idx;
+    searchReady = true;
   } catch (err) {
     showError(`Error loading data: ${err.message}`);
     console.error(err);
@@ -354,6 +359,7 @@ async function loadBible() {
 
 function showRandomVerse() {
   if (!verseList.length) { showError('No verses loaded.'); return; }
+  cleanupSearchObserver();
   current = null;
   renderedChapters = [];
   const entry = verseList[Math.floor(Math.random() * verseList.length)];
@@ -370,22 +376,27 @@ function setChapterBadge(ref) {
 function doSearch() {
   clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => {
-    if (!ready) return;
+    if (!searchReady) return;
     const q = input.value.trim();
     if (!q) { showRandomVerse(); return; }
+    cleanupSearchObserver();
     current = null;
     renderedChapters = [];
     document.getElementById('chapter-badge').textContent = '';
     const ids = searchIndex.search(q);
     ids.sort((a, b) => refScore(verseList[b].ref, q) - refScore(verseList[a].ref, q) || a - b);
-    renderEntries(ids.map(id => ({
+    searchResults = ids.map(id => ({
       ref: verseList[id].ref, text: verseList[id].text, highlight: q
-    })), 'search');
+    }));
+    searchCursor = 0;
+    container.innerHTML = '';
+    appendSearchBatch();
   }, 99);
 }
 
 function loadChapter(ref) {
   if (!ready) return;
+  cleanupSearchObserver();
   const p = parseRef(ref);
   if (!p) return;
   const book = bookIndex[p.book];
@@ -440,11 +451,79 @@ function renderEntries(entries, mode) {
     const viewH = window.innerHeight;
     let visible = 0;
     items.forEach(el => {
-      if (el.getBoundingClientRect().top < viewH) {
+      const top = el.getBoundingClientRect().top;
+      if (top < viewH && top > 130) {
         el.style.animationDelay = `${visible++ * 33}ms`;
       }
     });
   });
+}
+
+// ─── Search batch rendering ─────────────────────────────
+
+function cleanupSearchObserver() {
+  if (searchObserver) { searchObserver.disconnect(); searchObserver = null; }
+  if (searchSentinel && searchSentinel.parentNode) searchSentinel.parentNode.removeChild(searchSentinel);
+  searchSentinel = null;
+  searchResults = [];
+  searchCursor = 0;
+}
+
+function appendSearchBatch() {
+  if (searchCursor >= searchResults.length) { cleanupSearchObserver(); return; }
+  const batch = searchResults.slice(searchCursor, searchCursor + BATCH_SIZE);
+  searchCursor += BATCH_SIZE;
+
+  const frag = document.createDocumentFragment();
+  batch.forEach(entry => {
+    const el = document.createElement('div');
+    el.className = 'result-item';
+    const text = document.createElement('div');
+    text.className = 'result-text';
+    const esc = entry.highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    text.innerHTML = entry.text.replace(new RegExp(`(${esc})`, 'gi'), '<span class="result-highlight">$1</span>');
+    const ref = document.createElement('div');
+    ref.className = 'result-ref';
+    ref.textContent = `\u2014 ${entry.ref}`;
+    el.appendChild(text);
+    el.appendChild(ref);
+    el.addEventListener('click', () => loadChapter(entry.ref));
+    frag.appendChild(el);
+  });
+
+  if (searchSentinel && searchSentinel.parentNode) searchSentinel.parentNode.removeChild(searchSentinel);
+  container.appendChild(frag);
+
+  const newItems = container.querySelectorAll('.result-item');
+  const startFrom = newItems.length - batch.length;
+  const viewH = window.innerHeight;
+  newItems.forEach((el, i) => {
+    if (i < startFrom) return;
+    const top = el.getBoundingClientRect().top;
+    el.style.animation = 'none';
+    el.getBoundingClientRect();
+    if (top < viewH - 20 && top > 130) {
+      el.style.animation = 'fadeUp 0.4s ease forwards';
+      el.style.animationDelay = `${(i - startFrom) * 33}ms`;
+    } else {
+      el.style.animation = 'fadeUp 0.4s ease forwards';
+      el.style.animationDelay = '0ms';
+    }
+  });
+
+  if (searchCursor < searchResults.length) {
+    searchSentinel = document.createElement('div');
+    searchSentinel.style.height = '1px';
+    container.appendChild(searchSentinel);
+    if (!searchObserver) {
+      searchObserver = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) appendSearchBatch();
+      }, { rootMargin: '400px 0px' });
+    }
+    searchObserver.observe(searchSentinel);
+  } else {
+    cleanupSearchObserver();
+  }
 }
 
 // ─── Infinite scroll ────────────────────────────────────
