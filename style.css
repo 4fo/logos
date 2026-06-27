@@ -106,9 +106,16 @@
 
 input { -webkit-user-select: text; user-select: text; }
 
-input, #results, #results * { -webkit-user-select: text; user-select: text; }
+#results { -webkit-user-select: none; user-select: none; }
+.result-text { -webkit-user-select: text; user-select: text; }
+.result-ref, .inline-ref { -webkit-user-select: none; user-select: none; outline: none; }
 
-.result-ref, .inline-ref { -webkit-user-select: none; user-select: none; }
+::selection { background: rgba(255, 215, 0, 0.35); color: #fff; }
+@media (prefers-color-scheme: light) {
+  ::selection { background: rgba(255, 215, 0, 0.45); color: #1a1a1a; }
+}
+:root.light ::selection { background: rgba(255, 215, 0, 0.45); color: #1a1a1a; }
+:root.dark ::selection { background: rgba(255, 215, 0, 0.35); color: #fff; }
 
 body {
   background: var(--bg);
