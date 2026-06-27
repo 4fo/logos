@@ -272,7 +272,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: border-color 0.25s, background 0.3s, color 0.3s;
+  transition: transform 0.3s ease-out, border-color 0.25s, background 0.3s, color 0.3s;
+}
+
+#settings-btn.open {
+  transform: rotate(90deg);
 }
 
 #settings-btn:hover {
