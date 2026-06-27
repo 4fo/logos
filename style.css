@@ -106,7 +106,7 @@
 
 input { -webkit-user-select: text; user-select: text; }
 
-#results { -webkit-user-select: text; user-select: text; }
+input, #results, #results * { -webkit-user-select: text; user-select: text; }
 
 .result-ref, .inline-ref { -webkit-user-select: none; user-select: none; }
 
