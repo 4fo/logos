@@ -486,7 +486,7 @@ body {
 }
 
 #results {
-  max-width: 65ch;
+  max-width: 680px;
   margin: 0 auto;
   padding: 48px 24px 120px;
   overflow-anchor: none;
