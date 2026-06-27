@@ -418,8 +418,7 @@ async function loadBible() {
     } catch (_) {}
 
     if (!cached) {
-      const base = import.meta.env.BASE_URL;
-      const res = await fetch(`${base}data/verses-1769.json`);
+      const res = await fetch('data/verses-1769.json');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
 
