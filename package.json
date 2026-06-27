@@ -10,7 +10,8 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
-    "flexsearch": "^0.8.212",
+    "flexsearch": "^0.7.43",
+    "playwright": "^1.61.1",
     "vite": "^8.1.0"
   },
   "devDependencies": {

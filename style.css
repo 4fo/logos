@@ -23,9 +23,38 @@
   --highlight-text: #fff;
   --chapter-heading: rgba(255, 255, 255, 0.45);
   --search-color: #fff;
+  --text-scale: 1;
+  --glow-color: rgba(255, 255, 255, 0.5);
 }
 
-body.light {
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f5f2ed;
+    --fg: #1a1a1a;
+    --glass-bg:
+      radial-gradient(ellipse at 30% 0%, rgba(255,255,255,0.15) 0%, transparent 70%),
+      radial-gradient(ellipse at 70% 0%, rgba(255,255,255,0.10) 0%, transparent 60%),
+      linear-gradient(180deg, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0.01) 100%);
+    --glass-fill: rgba(0, 0, 0, 0.04);
+    --glass-border: rgba(0, 0, 0, 0.06);
+    --glass-focus: rgba(0, 0, 0, 0.13);
+    --glass-shadow: rgba(0, 0, 0, 0.06);
+    --bevel-top: rgba(255, 255, 255, 0.15);
+    --bevel-bottom: rgba(0, 0, 0, 0.03);
+    --pill-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    --placeholder: rgba(0, 0, 0, 0.14);
+    --result-text: rgba(0, 0, 0, 0.85);
+    --result-ref: rgba(0, 0, 0, 0.33);
+    --result-ref-hover: rgba(0, 0, 0, 0.66);
+    --highlight-bg: rgba(0, 0, 0, 0.06);
+    --highlight-text: #000;
+    --chapter-heading: rgba(0, 0, 0, 0.45);
+    --search-color: #000;
+    --glow-color: #c9a94e;
+  }
+}
+
+:root.light {
   --bg: #f5f2ed;
   --fg: #1a1a1a;
   --glass-bg:
@@ -47,16 +76,38 @@ body.light {
   --highlight-text: #000;
   --chapter-heading: rgba(0, 0, 0, 0.45);
   --search-color: #000;
+  --glow-color: #c9a94e;
 }
 
-body.light {
-  background: var(--bg);
+:root.dark {
+  --bg: #0a0a0a;
+  --fg: #e0e0e0;
+  --glass-bg:
+    radial-gradient(ellipse at 30% 0%, rgba(255,255,255,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse at 70% 0%, rgba(255,255,255,0.04) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  --glass-fill: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-focus: rgba(255, 255, 255, 0.17);
+  --glass-shadow: rgba(255, 255, 255, 0.06);
+  --bevel-top: rgba(255, 255, 255, 0.08);
+  --bevel-bottom: rgba(255, 255, 255, 0.03);
+  --pill-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+  --placeholder: rgba(255, 255, 255, 0.14);
+  --result-text: rgba(255, 255, 255, 0.88);
+  --result-ref: rgba(255, 255, 255, 0.33);
+  --result-ref-hover: rgba(255, 255, 255, 0.66);
+  --highlight-bg: rgba(255, 255, 255, 0.06);
+  --highlight-text: #fff;
+  --chapter-heading: rgba(255, 255, 255, 0.45);
+  --search-color: #fff;
+  --glow-color: rgba(255, 255, 255, 0.6);
 }
 
 body {
   background: var(--bg);
   color: var(--fg);
-  font-family: 'Rosarivo', serif;
+  font-family: var(--font-family);
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -94,6 +145,34 @@ body {
   z-index: -1;
 }
 
+#settings-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 9;
+  margin-top: 4px;
+  padding: 16px 24px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  box-shadow: var(--pill-shadow);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-12px);
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
+}
+
+#settings-panel.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
 #chapter-badge {
   text-align: center;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -108,15 +187,21 @@ body {
   display: none;
 }
 
+:root, :root[data-font="rosarivo"] { --font-family: 'Rosarivo', serif; }
+:root[data-font="baskervville"] { --font-family: 'Baskervville', serif; }
+:root[data-font="eb-garamond"] { --font-family: 'EB Garamond', serif; }
+:root[data-font="libre-caslon"] { --font-family: 'Libre Caslon Text', serif; }
+
 .title {
   text-align: center;
   font-size: 1.2rem;
   letter-spacing: 5px;
   text-transform: uppercase;
   color: var(--fg);
-  opacity: 0.55;
+  opacity: 0.8;
   margin-bottom: 4px;
   font-weight: 400;
+  animation: titleGlow 4s ease-in-out infinite;
 }
 
 #search-container {
@@ -174,7 +259,7 @@ body {
   pointer-events: auto;
 }
 
-#theme-toggle {
+#settings-btn {
   flex-shrink: 0;
   width: 44px;
   height: 44px;
@@ -182,7 +267,7 @@ body {
   border: 1px solid var(--glass-border);
   background: var(--glass-fill);
   color: var(--fg);
-  font-size: 1rem;
+  font-size: 1.2rem;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -190,14 +275,148 @@ body {
   transition: border-color 0.25s, background 0.3s, color 0.3s;
 }
 
-#theme-toggle:hover {
+#settings-btn:hover {
   border-color: var(--glass-focus);
+}
+
+/* Settings content */
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.settings-title {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--fg);
+  opacity: 0.55;
+}
+
+#settings-close {
+  background: none;
+  border: none;
+  color: var(--placeholder);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 6px;
+  line-height: 1;
+  border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+}
+
+#settings-close:hover {
+  color: var(--fg);
+  background: var(--glass-fill);
+}
+
+.setting-group + .setting-group {
+  border-top: 1px solid var(--glass-border);
+  margin-top: 12px;
+  padding-top: 12px;
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.setting-row:last-child {
+  margin-bottom: 0;
+}
+
+.setting-row label {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.82rem;
+  color: var(--result-text);
+}
+
+.theme-pills {
+  display: flex;
+  gap: 2px;
+  background: var(--glass-fill);
+  border-radius: 8px;
+  padding: 2px;
+}
+
+.pill {
+  background: none;
+  border: none;
+  color: var(--result-ref);
+  font-size: 0.75rem;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  transition: background 0.2s, color 0.2s;
+}
+
+.pill.active {
+  background: var(--glass-focus);
+  color: var(--fg);
+}
+
+.toggle-btn {
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-border);
+  color: var(--result-text);
+  font-size: 0.75rem;
+  padding: 5px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.toggle-btn:hover {
+  border-color: var(--glass-focus);
+}
+
+.size-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.size-controls button {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-fill);
+  color: var(--result-text);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.size-controls button:hover {
+  border-color: var(--glass-focus);
+}
+
+#size-display {
+  min-width: 36px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--result-ref);
+  letter-spacing: 0.02em;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 #results {
   max-width: 680px;
   margin: 0 auto;
-  padding: 24px 24px 120px;
+  padding: 48px 24px 120px;
   overflow-anchor: none;
 }
 
@@ -214,7 +433,7 @@ body {
 }
 
 .result-text {
-  font-size: 1.2rem;
+  font-size: calc(1.2rem * var(--text-scale));
   line-height: 1.75;
   color: var(--result-text);
   margin-bottom: 2px;
@@ -222,7 +441,7 @@ body {
 }
 
 .result-ref {
-  font-size: 0.9rem;
+  font-size: calc(0.9rem * var(--text-scale));
   color: var(--result-ref);
   font-style: italic;
   transition: color 0.2s;
@@ -248,6 +467,87 @@ body {
   font-size: 0.9rem;
 }
 
+/* Chapter dividers */
+.chapter-block {
+  margin-bottom: 28px;
+}
+
+.chapter-block:last-child {
+  margin-bottom: 0;
+}
+
+.ch-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 32px 0;
+}
+
+.chapter-block:first-child .ch-divider:first-child { margin-top: 0; }
+
+.ch-divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--glass-border);
+}
+
+.ch-divider-label {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--chapter-heading);
+  white-space: nowrap;
+}
+
+/* Paragraph mode */
+.paragraph-mode .result-text {
+  line-height: 1.9;
+}
+
+.paragraph-mode .result-ref {
+  display: none;
+}
+
+.inline-ref {
+  color: var(--result-ref);
+  font-size: 0.75em;
+  font-style: italic;
+  margin-right: 0.4em;
+}
+
+/* Toast */
+#toast {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  z-index: 100;
+  padding: 10px 24px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: 100px;
+  color: var(--result-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.8rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(16px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  white-space: nowrap;
+}
+
+#toast.visible {
+  opacity: 1;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(0);
+}
+
+@keyframes titleGlow {
+  0%, 100% { text-shadow: 0 0 1px transparent; }
+  50%   { text-shadow: 0 0 2px var(--glow-color), 0 0 6px var(--glow-color); }
+}
+
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -255,7 +555,8 @@ body {
 
 @media (max-width: 480px) {
   #header { padding: 16px; margin: 8px auto 0; }
-  #results { padding: 24px 16px 80px; }
+  #results { padding: 32px 16px 80px; }
   #search-input { padding: 12px 18px; font-size: 0.9rem; }
-  .result-text { font-size: 1.05rem; }
+  .result-text { font-size: calc(1.05rem * var(--text-scale)); }
+  #settings-panel { padding: 12px 16px; }
 }

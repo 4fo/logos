@@ -1,8 +1,9 @@
 #!/bin/bash
 cd "$(dirname "$0")"
-echo "==============================================="
-echo "  LOGOS — Classical Letterpress KJV Bible"
-echo "==============================================="
+
+echo "==================================="
+echo "  LOGOS — KJV Bible Search (V2)"
+echo "==================================="
 echo ""
 
 if [ ! -d "node_modules" ]; then
