@@ -106,16 +106,19 @@ const settingsClose = document.getElementById('settings-close');
 settingsBtn.addEventListener('click', e => {
   e.stopPropagation();
   settingsPanel.classList.toggle('visible');
+  settingsBtn.classList.toggle('open');
 });
 
 settingsClose.addEventListener('click', e => {
   e.stopPropagation();
   settingsPanel.classList.remove('visible');
+  settingsBtn.classList.remove('open');
 });
 
 document.addEventListener('click', e => {
   if (settingsPanel.classList.contains('visible') && !settingsPanel.contains(e.target) && e.target !== settingsBtn) {
     settingsPanel.classList.remove('visible');
+    settingsBtn.classList.remove('open');
   }
 });
 
