@@ -1,4 +1,4 @@
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
 :root {
   --bg: #0a0a0a;
@@ -272,10 +272,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.3s ease-out, border-color 0.25s, background 0.3s, color 0.3s;
+  transition: border-color 0.25s, background 0.3s, color 0.3s;
 }
 
-#settings-btn.open {
+#settings-icon {
+  display: inline-block;
+  transition: transform 0.3s ease-out;
+}
+
+#settings-btn.open #settings-icon {
   transform: rotate(90deg);
 }
 
