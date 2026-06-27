@@ -361,6 +361,17 @@ function scheduleGlint() {
 
 // ─── Bible data loading ─────────────────────────────────
 
+let _db = null;
+function getDB() {
+  if (!_db) _db = new Promise((resolve, reject) => {
+    const req = indexedDB.open('logos-cache', 1);
+    req.onupgradeneeded = () => req.result.createObjectStore('bible');
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+  return _db;
+}
+
 async function loadBible() {
   container = document.getElementById('results');
   setupChObserver();
@@ -396,33 +407,46 @@ async function loadBible() {
   }, { passive: false });
 
   try {
-    const base = import.meta.env.BASE_URL;
-    const res = await fetch(`${base}data/verses-1769.json`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
+    let cached = false;
+    try {
+      const db = await getDB();
+      const tx = db.transaction('bible', 'readonly');
+      const s = tx.objectStore('bible');
+      const cv = await new Promise(r => { const q = s.get('verseList'); q.onsuccess = () => r(q.result); });
+      const cb = await new Promise(r => { const q = s.get('bookIndex'); q.onsuccess = () => r(q.result); });
+      if (cv && cb) { verseList = cv; bookIndex = cb; cached = true; }
+    } catch (_) {}
 
-    verseList = [];
-    const raw = new Map();
+    if (!cached) {
+      const base = import.meta.env.BASE_URL;
+      const res = await fetch(`${base}data/verses-1769.json`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
 
-    for (const [ref, text] of Object.entries(data)) {
-      const p = parseRef(ref);
-      if (!p) continue;
-      verseList.push({ ref, text });
-      if (!raw.has(p.book)) raw.set(p.book, new Map());
-      const chMap = raw.get(p.book);
-      if (!chMap.has(p.chapter)) chMap.set(p.chapter, []);
-      chMap.get(p.chapter).push({ ref, text, verse: p.verse });
-    }
+      verseList = [];
+      bookIndex = {};
 
-    for (const [ref] of Object.entries(data)) {
-      const p = parseRef(ref);
-      if (!p || bookIndex[p.book]) continue;
-      const chMap = raw.get(p.book);
-      const chapters = {};
-      for (const [num, verses] of chMap) {
-        chapters[num] = verses.sort((a, b) => a.verse - b.verse);
+      for (const [ref, text] of Object.entries(data)) {
+        const p = parseRef(ref);
+        if (!p) continue;
+        verseList.push({ ref, text });
+        if (!bookIndex[p.book]) bookIndex[p.book] = { name: p.book, chapters: {} };
+        const ch = bookIndex[p.book].chapters;
+        if (!ch[p.chapter]) ch[p.chapter] = [];
+        ch[p.chapter].push({ ref, text, verse: p.verse });
       }
-      bookIndex[p.book] = { name: p.book, chapters };
+
+      for (const b in bookIndex) {
+        const chs = bookIndex[b].chapters;
+        for (const c in chs) chs[c].sort((a, b) => a.verse - b.verse);
+      }
+
+      getDB().then(db => {
+        const tx = db.transaction('bible', 'readwrite');
+        const s = tx.objectStore('bible');
+        s.put(verseList, 'verseList');
+        s.put(bookIndex, 'bookIndex');
+      }).catch(() => {});
     }
 
     ready = true;
@@ -435,10 +459,13 @@ async function loadBible() {
     }
     if (!current) showRandomVerse();
 
-    const idx = new FlexSearch.Index({ tokenize: 'forward' });
-    verseList.forEach((v, i) => idx.add(i, `${v.ref} ${v.text}`));
-    searchIndex = idx;
-    searchReady = true;
+    setTimeout(() => {
+      const idx = new FlexSearch.Index({ tokenize: 'forward' });
+      verseList.forEach((v, i) => idx.add(i, `${v.ref} ${v.text}`));
+      searchIndex = idx;
+      searchReady = true;
+    }, 200);
+
     scheduleGlint();
   } catch (err) {
     showError(`Error loading data: ${err.message}`);
