@@ -290,6 +290,7 @@ function createChapterBlock(book, chapter) {
       const span = e.target.closest('.inline-ref');
       if (!span) return;
       e.stopPropagation();
+      e.preventDefault();
       copyVerse(span.dataset.text, `${book} ${chapter}:${span.textContent}`);
     });
     item.appendChild(textDiv);
