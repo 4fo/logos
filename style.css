@@ -115,19 +115,27 @@ body {
   transition: background 0.3s, color 0.3s;
 }
 
-#header-group {
-  position: relative;
-  max-width: 680px;
-  margin: 16px auto 0;
-}
-
 #header {
   position: sticky;
   top: 16px;
   z-index: 10;
+  max-width: 680px;
+  margin: 16px auto 0;
   padding: 20px 24px 16px;
   background: transparent;
   border-radius: 16px;
+}
+
+#header::after {
+  content: '';
+  position: absolute;
+  top: -16px;
+  left: 0;
+  right: 0;
+  height: 16px;
+  background: var(--bg);
+  z-index: 1;
+  pointer-events: none;
 }
 
 #header::before {
@@ -165,8 +173,6 @@ body {
   border-radius: 12px;
   box-shadow: var(--pill-shadow);
   opacity: 0;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 28px, black 100%);
-  mask-image: linear-gradient(to bottom, transparent 0%, black 28px, black 100%);
   visibility: hidden;
   pointer-events: none;
   transform: translateY(-100%);
