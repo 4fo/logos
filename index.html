@@ -10,12 +10,40 @@
 </head>
 <body>
   <div id="header">
-    <div class="title">Logos</div>
-    <div id="chapter-badge"></div>
-    <div id="search-container">
-      <input id="search-input" type="text" placeholder="Search scripture..." spellcheck="false">
-      <button id="search-clear" aria-label="Clear search">✕</button>
-      <button id="theme-toggle" aria-label="Toggle theme"></button>
+    <div class="header-content">
+      <div class="title">Logos</div>
+      <div id="chapter-badge"></div>
+      <div id="search-container">
+        <input id="search-input" type="text" placeholder="Search scripture..." spellcheck="false">
+        <button id="search-clear" aria-label="Clear search">✕</button>
+        <button id="settings-btn" aria-label="Settings">⚙</button>
+      </div>
+    </div>
+    <div class="settings-content">
+      <div class="settings-header">
+        <span class="settings-title">Settings</span>
+        <button id="settings-close" aria-label="Close settings">✕</button>
+      </div>
+      <div class="setting-row">
+        <label>Theme</label>
+        <div class="theme-pills">
+          <button class="pill active" data-theme="system">System</button>
+          <button class="pill" data-theme="light">Light</button>
+          <button class="pill" data-theme="dark">Dark</button>
+        </div>
+      </div>
+      <div class="setting-row">
+        <label>Layout</label>
+        <button id="layout-toggle" class="toggle-btn">Paragraph</button>
+      </div>
+      <div class="setting-row">
+        <label>Text size</label>
+        <div class="size-controls">
+          <button id="size-down">−</button>
+          <span id="size-display">100%</span>
+          <button id="size-up">+</button>
+        </div>
+      </div>
     </div>
   </div>
   <div id="results"></div>

@@ -5,6 +5,10 @@ let bookIndex = {};
 let searchIndex = null;
 let debounceTimer;
 let ready = false;
+let current = null;
+let container;
+let renderedChapters = [];
+let isFetching = false;
 
 function parseRef(ref) {
   const m = ref.match(/^(.+?)\s+(\d+):(\d+)$/);
@@ -27,11 +31,208 @@ function refScore(ref, query) {
 }
 
 function showError(msg) {
-  const container = document.getElementById('results');
   container.innerHTML = `<div class="error-msg">${msg}</div>`;
 }
 
+// ─── Theme ──────────────────────────────────────────────
+
+const themePills = document.querySelectorAll('.pill');
+
+function setTheme(theme) {
+  localStorage.setItem('logos-theme', theme);
+  const root = document.documentElement;
+  root.classList.remove('light', 'dark');
+  if (theme !== 'system') root.classList.add(theme);
+  themePills.forEach(p => p.classList.toggle('active', p.dataset.theme === theme));
+}
+
+const savedTheme = localStorage.getItem('logos-theme') || 'system';
+setTheme(savedTheme);
+themePills.forEach(p => p.addEventListener('click', () => setTheme(p.dataset.theme)));
+
+// ─── Settings panel ─────────────────────────────────────
+
+const header = document.getElementById('header');
+const settingsBtn = document.getElementById('settings-btn');
+const settingsClose = document.getElementById('settings-close');
+
+settingsBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  header.classList.toggle('settings-mode');
+});
+
+settingsClose.addEventListener('click', e => {
+  e.stopPropagation();
+  header.classList.remove('settings-mode');
+});
+
+document.addEventListener('click', e => {
+  if (header.classList.contains('settings-mode') && !header.contains(e.target)) {
+    header.classList.remove('settings-mode');
+  }
+});
+
+// ─── Text size ──────────────────────────────────────────
+
+let textScale = parseFloat(localStorage.getItem('logos-text-scale')) || 1;
+
+function applyScale(s) {
+  textScale = Math.max(0.7, Math.min(1.5, s));
+  localStorage.setItem('logos-text-scale', textScale);
+  document.documentElement.style.setProperty('--text-scale', textScale);
+  document.getElementById('size-display').textContent = Math.round(textScale * 100) + '%';
+}
+
+document.getElementById('size-down').addEventListener('click', () => applyScale(textScale - 0.1));
+document.getElementById('size-up').addEventListener('click', () => applyScale(textScale + 0.1));
+applyScale(textScale);
+
+// ─── Layout toggle ──────────────────────────────────────
+
+let layout = localStorage.getItem('logos-layout') || 'verse';
+const layoutToggle = document.getElementById('layout-toggle');
+
+function applyLayout(l) {
+  layout = l;
+  localStorage.setItem('logos-layout', l);
+  layoutToggle.textContent = l === 'verse' ? 'Paragraph' : 'Verse per line';
+  if (current) initChapterView(current.book, current.chapter);
+}
+
+layoutToggle.addEventListener('click', () => {
+  applyLayout(layout === 'verse' ? 'paragraph' : 'verse');
+});
+applyLayout(layout);
+
+// ─── Chapter helpers ────────────────────────────────────
+
+function getNextChapterPos(pos) {
+  if (!pos) return null;
+  const book = bookIndex[pos.book];
+  if (!book) return null;
+  const chapters = Object.keys(book.chapters).map(Number).sort((a, b) => a - b);
+  const idx = chapters.indexOf(pos.chapter);
+  if (idx < chapters.length - 1) return { book: pos.book, chapter: chapters[idx + 1] };
+  const books = Object.keys(bookIndex);
+  const bi = books.indexOf(pos.book);
+  if (bi < books.length - 1) return { book: books[bi + 1], chapter: 1 };
+  return null;
+}
+
+function getPrevChapterPos(pos) {
+  if (!pos) return null;
+  const book = bookIndex[pos.book];
+  if (!book) return null;
+  const chapters = Object.keys(book.chapters).map(Number).sort((a, b) => a - b);
+  const idx = chapters.indexOf(pos.chapter);
+  if (idx > 0) return { book: pos.book, chapter: chapters[idx - 1] };
+  const books = Object.keys(bookIndex);
+  const bi = books.indexOf(pos.book);
+  if (bi > 0) {
+    const lastCh = Math.max(...Object.keys(bookIndex[books[bi - 1]].chapters).map(Number));
+    return { book: books[bi - 1], chapter: lastCh };
+  }
+  return null;
+}
+
+function createDivider(book, chapter) {
+  const div = document.createElement('div');
+  div.className = 'ch-divider';
+  div.innerHTML = `
+    <span class="ch-divider-line"></span>
+    <span class="ch-divider-label">${book} ${chapter}</span>
+    <span class="ch-divider-line"></span>
+  `;
+  return div;
+}
+
+function createChapterBlock(book, chapter) {
+  const p = bookIndex[book];
+  if (!p) return null;
+  const ch = p.chapters[chapter];
+  if (!ch) return null;
+
+  const block = document.createElement('div');
+  block.className = 'chapter-block';
+  block.dataset.book = book;
+  block.dataset.chapter = chapter;
+  block.appendChild(createDivider(book, chapter));
+
+  if (layout === 'paragraph') {
+    const item = document.createElement('div');
+    item.className = 'result-item paragraph-mode';
+    const textDiv = document.createElement('div');
+    textDiv.className = 'result-text';
+    textDiv.innerHTML = ch.map(e =>
+      `<span class="inline-ref">${e.verse}</span> ${e.text}`
+    ).join(' ');
+    item.appendChild(textDiv);
+    block.appendChild(item);
+  } else {
+    ch.forEach(e => {
+      const item = document.createElement('div');
+      item.className = 'result-item';
+      const text = document.createElement('div');
+      text.className = 'result-text';
+      text.textContent = e.text;
+      const ref = document.createElement('div');
+      ref.className = 'result-ref';
+      ref.textContent = `\u2014 ${e.ref}`;
+      item.appendChild(text);
+      item.appendChild(ref);
+      block.appendChild(item);
+    });
+  }
+
+  return block;
+}
+
+function animateBlockItems(block) {
+  const items = block.querySelectorAll('.result-item');
+  const viewH = window.innerHeight;
+  let visible = 0;
+  items.forEach(el => {
+    el.style.animation = 'none';
+    el.getBoundingClientRect();
+    if (el.getBoundingClientRect().top < viewH) {
+      el.style.animation = 'fadeUp 0.4s ease forwards';
+      el.style.animationDelay = `${visible++ * 33}ms`;
+    } else {
+      el.style.animation = 'fadeUp 0.4s ease forwards';
+      el.style.animationDelay = '0ms';
+    }
+  });
+}
+
+function initChapterView(book, chapter) {
+  container.innerHTML = '';
+  renderedChapters = [];
+  current = { book, chapter };
+  const block = createChapterBlock(book, chapter);
+  if (!block) return;
+  container.appendChild(block);
+  renderedChapters.push({ book, chapter });
+  requestAnimationFrame(() => animateBlockItems(block));
+}
+
+function appendChapter(pos, where) {
+  if (!pos) return;
+  const block = createChapterBlock(pos.book, pos.chapter);
+  if (!block) return;
+  if (where === 'prepend') {
+    container.insertBefore(block, container.firstChild);
+    renderedChapters.unshift(pos);
+  } else {
+    container.appendChild(block);
+    renderedChapters.push(pos);
+  }
+  requestAnimationFrame(() => animateBlockItems(block));
+}
+
+// ─── Bible data loading ─────────────────────────────────
+
 async function loadBible() {
+  container = document.getElementById('results');
   try {
     const base = import.meta.env.BASE_URL;
     const res = await fetch(`${base}data/verses-1769.json`);
@@ -84,9 +285,14 @@ async function loadBible() {
   }
 }
 
+// ─── Render ─────────────────────────────────────────────
+
 function showRandomVerse() {
   if (!verseList.length) { showError('No verses loaded.'); return; }
+  current = null;
+  renderedChapters = [];
   const entry = verseList[Math.floor(Math.random() * verseList.length)];
+  container.innerHTML = '';
   renderEntries([entry], 'home');
   setChapterBadge(entry.ref);
 }
@@ -100,15 +306,17 @@ function doSearch() {
   clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => {
     if (!ready) return;
-    const q = document.getElementById('search-input').value.trim();
+    const q = input.value.trim();
     if (!q) { showRandomVerse(); return; }
+    current = null;
+    renderedChapters = [];
     document.getElementById('chapter-badge').textContent = '';
     const ids = searchIndex.search(q);
     ids.sort((a, b) => refScore(verseList[b].ref, q) - refScore(verseList[a].ref, q) || a - b);
     renderEntries(ids.map(id => ({
       ref: verseList[id].ref, text: verseList[id].text, highlight: q
     })), 'search');
-  },   99);
+  }, 99);
 }
 
 function loadChapter(ref) {
@@ -120,7 +328,7 @@ function loadChapter(ref) {
   const ch = book.chapters[p.chapter];
   if (!ch) return;
 
-  renderEntries(ch, 'chapter');
+  initChapterView(p.book, p.chapter);
 
   const hash = `#${p.book.replace(/\s/g, '_')}-${p.chapter}-${ch[0].verse}`;
   history.pushState(null, '', hash);
@@ -130,7 +338,6 @@ function loadChapter(ref) {
 }
 
 function renderEntries(entries, mode) {
-  const container = document.getElementById('results');
   container.innerHTML = '';
 
   entries.forEach((entry, i) => {
@@ -175,32 +382,76 @@ function renderEntries(entries, mode) {
   });
 }
 
-function applyTheme(light) {
-  document.body.classList.toggle('light', light);
-  document.getElementById('theme-toggle').textContent = light ? '\u{1F31B}' : '\u{1F319}';
-}
+// ─── Infinite scroll ────────────────────────────────────
 
-const saved = localStorage.getItem('logos-theme');
-if (saved === 'light') applyTheme(true);
+window.addEventListener('scroll', () => {
+  if (!current || isFetching) return;
+  const { scrollY } = window;
+  const scrollH = document.documentElement.scrollHeight;
+  const clientH = document.documentElement.clientHeight;
 
-document.getElementById('theme-toggle').addEventListener('click', () => {
-  const light = document.body.classList.toggle('light');
-  localStorage.setItem('logos-theme', light ? 'light' : 'dark');
-  document.getElementById('theme-toggle').textContent = light ? '\u{1F31B}' : '\u{1F319}';
-});
+  if (scrollY + clientH >= scrollH - 400) {
+    const next = getNextChapterPos(renderedChapters[renderedChapters.length - 1]);
+    if (next) {
+      isFetching = true;
+      appendChapter(next, 'append');
+      isFetching = false;
+    }
+  }
 
-document.querySelector('.title').addEventListener('click', () => {
-  if (!ready) return;
-  document.getElementById('search-input').value = '';
-  clearBtn.classList.remove('visible');
-  history.pushState(null, '', window.location.pathname);
-  showRandomVerse();
-});
+  if (scrollY <= 200 && renderedChapters.length > 0) {
+    const prev = getPrevChapterPos(renderedChapters[0]);
+    if (prev) {
+      isFetching = true;
+      const prevScrollH = scrollH;
+      appendChapter(prev, 'prepend');
+      window.scrollTo(0, document.documentElement.scrollHeight - prevScrollH + scrollY);
+      isFetching = false;
+    }
+  }
+}, { passive: true });
+
+// ─── Gesture navigation ─────────────────────────────────
+
+let touchStartX = 0, touchStartY = 0;
+
+container.addEventListener('touchstart', e => {
+  if (!current) return;
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+container.addEventListener('touchend', e => {
+  if (!current || isFetching) return;
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+    isFetching = true;
+    const target = dx > 0
+      ? getPrevChapterPos(renderedChapters[0])
+      : getNextChapterPos(renderedChapters[renderedChapters.length - 1]);
+    if (target) initChapterView(target.book, target.chapter);
+    isFetching = false;
+  }
+}, { passive: true });
+
+container.addEventListener('wheel', e => {
+  if (!current || !e.shiftKey || isFetching) return;
+  e.preventDefault();
+  isFetching = true;
+  const target = e.deltaX > 0
+    ? getNextChapterPos(renderedChapters[renderedChapters.length - 1])
+    : getPrevChapterPos(renderedChapters[0]);
+  if (target) initChapterView(target.book, target.chapter);
+  isFetching = false;
+}, { passive: false });
+
+// ─── Event bindings ─────────────────────────────────────
 
 const input = document.getElementById('search-input');
-input.addEventListener('input', doSearch);
-
 const clearBtn = document.getElementById('search-clear');
+
+input.addEventListener('input', doSearch);
 
 input.addEventListener('input', () => {
   clearBtn.classList.toggle('visible', input.value.length > 0);
@@ -211,6 +462,14 @@ clearBtn.addEventListener('click', () => {
   clearBtn.classList.remove('visible');
   if (ready) showRandomVerse();
   input.focus();
+});
+
+document.querySelector('.title').addEventListener('click', () => {
+  if (!ready) return;
+  input.value = '';
+  clearBtn.classList.remove('visible');
+  history.pushState(null, '', window.location.pathname);
+  showRandomVerse();
 });
 
 document.addEventListener('keydown', e => {
