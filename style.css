@@ -583,6 +583,11 @@ body {
   font-size: 0.75em;
   font-style: italic;
   margin-right: 0.4em;
+  transition: color 0.2s;
+}
+
+.paragraph-mode:hover .inline-ref {
+  color: var(--result-ref-hover);
 }
 
 /* Toast */
