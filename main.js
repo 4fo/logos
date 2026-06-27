@@ -336,6 +336,29 @@ function appendChapter(pos, where) {
   requestAnimationFrame(() => animateBlockItems(block));
 }
 
+function scheduleGlint() {
+  const delay = 3000 + Math.random() * 9000;
+  setTimeout(() => {
+    const title = document.querySelector('.title');
+    if (!title) return;
+    const dirs = [[-1,-1],[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0]];
+    const dir = dirs[Math.floor(Math.random() * dirs.length)];
+    const spread = 2 + Math.random() * 6;
+    const dist = 1 + Math.random() * 4;
+    const trails = Math.floor(Math.random() * 3);
+    const dur = 120 + Math.random() * 280;
+    let shadows = [];
+    for (let i = 0; i <= trails; i++) {
+      const f = 1 - i * 0.35;
+      if (f <= 0) break;
+      shadows.push(`${dir[0] * dist * f}px ${dir[1] * dist * f}px ${spread * f}px var(--glow-color)`);
+    }
+    title.style.textShadow = shadows.join(', ');
+    setTimeout(() => { title.style.textShadow = ''; }, dur);
+    scheduleGlint();
+  }, delay);
+}
+
 // ─── Bible data loading ─────────────────────────────────
 
 async function loadBible() {
@@ -416,6 +439,7 @@ async function loadBible() {
     verseList.forEach((v, i) => idx.add(i, `${v.ref} ${v.text}`));
     searchIndex = idx;
     searchReady = true;
+    scheduleGlint();
   } catch (err) {
     showError(`Error loading data: ${err.message}`);
     console.error(err);

@@ -24,7 +24,7 @@
   --chapter-heading: rgba(255, 255, 255, 0.45);
   --search-color: #fff;
   --text-scale: 1;
-  --glow-color: #fff;
+  --glow-color: #ffd700;
 }
 
 @media (prefers-color-scheme: light) {
@@ -101,7 +101,7 @@
   --highlight-text: #fff;
   --chapter-heading: rgba(255, 255, 255, 0.45);
   --search-color: #fff;
-  --glow-color: #fff;
+  --glow-color: #ffd700;
 }
 
 body {
@@ -197,19 +197,11 @@ body {
   font-size: 1.2rem;
   letter-spacing: 5px;
   text-transform: uppercase;
+  color: var(--fg);
   opacity: 0.8;
   margin-bottom: 4px;
   font-weight: 400;
-  color: transparent;
-  background: linear-gradient(90deg,
-    var(--fg) 0%, var(--fg) 43%,
-    var(--glow-color) 45%, var(--glow-color) 55%,
-    var(--fg) 57%, var(--fg) 100%
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  background-size: 200% 100%;
-  animation: glint 4s ease-in-out infinite;
+  animation: breathe 5s ease-in-out infinite;
 }
 
 #search-container {
@@ -570,12 +562,9 @@ body {
   transform: translateX(-50%) translateY(0);
 }
 
-@keyframes glint {
-  0% { background-position: 0% 0; }
-  25% { background-position: 50% 0; }
-  30% { background-position: 50% 0; }
-  55% { background-position: 100% 0; }
-  100% { background-position: 100% 0; }
+@keyframes breathe {
+  0%, 100% { text-shadow: 0 0 1px transparent; }
+  50%      { text-shadow: 0 0 3px var(--glow-color), 0 0 10px var(--glow-color); }
 }
 
 @keyframes fadeUp {
