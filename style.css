@@ -1,4 +1,4 @@
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
 
 :root {
   --bg: #0a0a0a;
@@ -103,6 +103,12 @@
   --search-color: #fff;
   --glow-color: #ffd700;
 }
+
+input { -webkit-user-select: text; user-select: text; }
+
+#results { -webkit-user-select: text; user-select: text; }
+
+.result-ref, .inline-ref { -webkit-user-select: none; user-select: none; }
 
 body {
   background: var(--bg);
