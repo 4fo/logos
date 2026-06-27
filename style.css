@@ -586,7 +586,7 @@ body {
   transition: color 0.2s;
 }
 
-.paragraph-mode:hover .inline-ref {
+.paragraph-mode .inline-ref:hover {
   color: var(--result-ref-hover);
 }
 
