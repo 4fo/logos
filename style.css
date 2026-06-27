@@ -495,7 +495,7 @@ body {
 }
 
 .result-item {
-  margin-bottom: 28px;
+  margin-bottom: calc(1lh * var(--text-scale));
   cursor: pointer;
   animation: fadeUp 0.4s ease forwards;
   opacity: 0;
