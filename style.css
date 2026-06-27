@@ -106,7 +106,7 @@
 
 input { -webkit-user-select: text; user-select: text; }
 
-#results { -webkit-user-select: none; user-select: none; }
+#results { -webkit-user-select: none; user-select: none; touch-action: pan-y; }
 .result-text { -webkit-user-select: text; user-select: text; }
 .result-ref, .inline-ref { -webkit-user-select: none; user-select: none; outline: none; }
 

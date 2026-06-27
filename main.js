@@ -406,6 +406,27 @@ async function loadBible() {
     isFetching = false;
   }, { passive: false });
 
+  // Pinch-to-zoom
+  let pinchStart = null;
+  container.addEventListener('touchstart', e => {
+    if (e.touches.length === 2) {
+      const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
+                           e.touches[0].clientY - e.touches[1].clientY);
+      pinchStart = { d, scale: textScale };
+    }
+  }, { passive: true });
+  container.addEventListener('touchmove', e => {
+    if (e.touches.length === 2 && pinchStart) {
+      e.preventDefault();
+      const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
+                           e.touches[0].clientY - e.touches[1].clientY);
+      applyScale(Math.round(pinchStart.scale * (d / pinchStart.d) / 0.05) * 0.05);
+    }
+  }, { passive: false });
+  container.addEventListener('touchend', e => {
+    if (e.touches.length < 2) pinchStart = null;
+  }, { passive: true });
+
   try {
     let cached = false;
     try {
