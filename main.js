@@ -124,18 +124,44 @@ document.addEventListener('click', e => {
 
 // ─── Text size ──────────────────────────────────────────
 
-let textScale = parseFloat(localStorage.getItem('logos-text-scale')) || 1;
+const SIZE_STEP_SCALES = [0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0];
+const SIZE_STEP_LH    = [1.03, 1.02, 1.01, 1.00, 0.99, 0.98, 0.97, 0.96, 0.96, 0.95, 0.95, 0.94, 0.94, 0.94];
+const SIZE_STEPS      = SIZE_STEP_SCALES.length;
 
-function applyScale(s) {
-  textScale = Math.max(0.7, Math.min(1.5, s));
-  localStorage.setItem('logos-text-scale', textScale);
-  document.documentElement.style.setProperty('--text-scale', textScale);
-  document.getElementById('size-display').textContent = Math.round(textScale * 100) + '%';
+let sizeStepIdx = 3;
+
+function applySizeStep(idx) {
+  sizeStepIdx = Math.max(0, Math.min(SIZE_STEPS - 1, idx));
+  const s = SIZE_STEP_SCALES[sizeStepIdx];
+  document.documentElement.style.setProperty('--text-scale', s);
+  document.documentElement.style.setProperty('--lh-modifier', SIZE_STEP_LH[sizeStepIdx]);
+  localStorage.setItem('logos-size-step', sizeStepIdx);
+  document.getElementById('size-display').textContent = Math.round(s * 100) + '%';
 }
 
-document.getElementById('size-down').addEventListener('click', () => applyScale(textScale - 0.1));
-document.getElementById('size-up').addEventListener('click', () => applyScale(textScale + 0.1));
-applyScale(textScale);
+function sizeStepFromScale(scale) {
+  let nearest = 3;
+  for (let i = 0; i < SIZE_STEPS; i++) {
+    if (Math.abs(SIZE_STEP_SCALES[i] - scale) < Math.abs(SIZE_STEP_SCALES[nearest] - scale)) nearest = i;
+  }
+  return nearest;
+}
+
+const savedStep = localStorage.getItem('logos-size-step');
+if (savedStep !== null) {
+  applySizeStep(parseInt(savedStep));
+} else {
+  const oldScale = parseFloat(localStorage.getItem('logos-text-scale'));
+  if (oldScale) {
+    applySizeStep(sizeStepFromScale(oldScale));
+    localStorage.removeItem('logos-text-scale');
+  } else {
+    applySizeStep(3);
+  }
+}
+
+document.getElementById('size-down').addEventListener('click', () => applySizeStep(sizeStepIdx - 1));
+document.getElementById('size-up').addEventListener('click', () => applySizeStep(sizeStepIdx + 1));
 
 // ─── Layout toggle ──────────────────────────────────────
 
@@ -157,20 +183,21 @@ applyLayout(layout);
 // ─── Font toggle ─────────────────────────────────────────
 
 const FONTS = [
-  { id: 'rosarivo',      label: 'Rosarivo' },
-  { id: 'baskervville',  label: 'Baskervville' },
-  { id: 'eb-garamond',   label: 'EB Garamond' },
-  { id: 'libre-caslon',  label: 'Libre Caslon Text' },
-  { id: 'pt-serif',      label: 'PT Serif' },
-  { id: 'lora',          label: 'Lora' },
-  { id: 'literata',      label: 'Literata' },
-  { id: 'charis-sil',    label: 'Charis SIL' },
-  { id: 'alegreya',      label: 'Alegreya' },
+  { id: 'rosarivo',         label: 'Rosarivo' },
+  { id: 'eb-garamond',      label: 'EB Garamond' },
+  { id: 'baskervville',     label: 'Baskervville' },
+  { id: 'libre-caslon-text',label: 'Libre Caslon Text' },
+  { id: 'lora',             label: 'Lora' },
+  { id: 'alegreya',         label: 'Alegreya' },
+  { id: 'literata',         label: 'Literata' },
+  { id: 'pt-serif',         label: 'PT Serif' },
+  { id: 'charis-sil',       label: 'Charis SIL' },
 ];
 
 let fontIdx = 0;
 const saved = localStorage.getItem('logos-font');
-if (saved) { const i = FONTS.findIndex(f => f.id === saved); if (i !== -1) fontIdx = i; }
+if (saved === 'libre-caslon') { localStorage.setItem('logos-font', 'libre-caslon-text'); fontIdx = FONTS.findIndex(f => f.id === 'libre-caslon-text'); }
+else if (saved) { const i = FONTS.findIndex(f => f.id === saved); if (i !== -1) fontIdx = i; }
 
 const fontToggle = document.getElementById('font-toggle');
 
@@ -417,7 +444,7 @@ async function loadBible() {
     if (e.touches.length === 2) {
       const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
                            e.touches[0].clientY - e.touches[1].clientY);
-      pinchStart = { d, scale: textScale };
+      pinchStart = { d, step: sizeStepIdx };
     }
   }, { passive: true });
   container.addEventListener('touchmove', e => {
@@ -425,7 +452,7 @@ async function loadBible() {
       e.preventDefault();
       const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
                            e.touches[0].clientY - e.touches[1].clientY);
-      applyScale(Math.round(pinchStart.scale * (d / pinchStart.d) / 0.05) * 0.05);
+      applySizeStep(sizeStepFromScale(SIZE_STEP_SCALES[pinchStart.step] * (d / pinchStart.d)));
     }
   }, { passive: false });
   container.addEventListener('touchend', e => {

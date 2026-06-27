@@ -1,3 +1,29 @@
+@font-face { font-family: 'Rosarivo'; font-style: normal; font-weight: 400; src: url('fonts/rosarivo-400.woff2') format('woff2'); }
+@font-face { font-family: 'Rosarivo'; font-style: italic; font-weight: 400; src: url('fonts/rosarivo-400i.woff2') format('woff2'); }
+@font-face { font-family: 'EB Garamond'; font-style: normal; font-weight: 400; src: url('fonts/eb-garamond-400.woff2') format('woff2'); }
+@font-face { font-family: 'EB Garamond'; font-style: italic; font-weight: 400; src: url('fonts/eb-garamond-400i.woff2') format('woff2'); }
+@font-face { font-family: 'EB Garamond'; font-style: normal; font-weight: 700; src: url('fonts/eb-garamond-700.woff2') format('woff2'); }
+@font-face { font-family: 'Baskervville'; font-style: normal; font-weight: 400; src: url('fonts/baskervville-400.woff2') format('woff2'); }
+@font-face { font-family: 'Baskervville'; font-style: italic; font-weight: 400; src: url('fonts/baskervville-400i.woff2') format('woff2'); }
+@font-face { font-family: 'Libre Caslon Text'; font-style: normal; font-weight: 400; src: url('fonts/libre-caslon-text-400.woff2') format('woff2'); }
+@font-face { font-family: 'Libre Caslon Text'; font-style: italic; font-weight: 400; src: url('fonts/libre-caslon-text-400i.woff2') format('woff2'); }
+@font-face { font-family: 'Libre Caslon Text'; font-style: normal; font-weight: 700; src: url('fonts/libre-caslon-text-700.woff2') format('woff2'); }
+@font-face { font-family: 'PT Serif'; font-style: normal; font-weight: 400; src: url('fonts/pt-serif-400.woff2') format('woff2'); }
+@font-face { font-family: 'PT Serif'; font-style: italic; font-weight: 400; src: url('fonts/pt-serif-400i.woff2') format('woff2'); }
+@font-face { font-family: 'PT Serif'; font-style: normal; font-weight: 700; src: url('fonts/pt-serif-700.woff2') format('woff2'); }
+@font-face { font-family: 'Lora'; font-style: normal; font-weight: 400; src: url('fonts/lora-400.woff2') format('woff2'); }
+@font-face { font-family: 'Lora'; font-style: italic; font-weight: 400; src: url('fonts/lora-400i.woff2') format('woff2'); }
+@font-face { font-family: 'Lora'; font-style: normal; font-weight: 700; src: url('fonts/lora-700.woff2') format('woff2'); }
+@font-face { font-family: 'Literata'; font-style: normal; font-weight: 400; src: url('fonts/literata-400.woff2') format('woff2'); }
+@font-face { font-family: 'Literata'; font-style: italic; font-weight: 400; src: url('fonts/literata-400i.woff2') format('woff2'); }
+@font-face { font-family: 'Literata'; font-style: normal; font-weight: 700; src: url('fonts/literata-700.woff2') format('woff2'); }
+@font-face { font-family: 'Charis SIL'; font-style: normal; font-weight: 400; src: url('fonts/charis-sil-400.woff2') format('woff2'); }
+@font-face { font-family: 'Charis SIL'; font-style: italic; font-weight: 400; src: url('fonts/charis-sil-400i.woff2') format('woff2'); }
+@font-face { font-family: 'Charis SIL'; font-style: normal; font-weight: 700; src: url('fonts/charis-sil-700.woff2') format('woff2'); }
+@font-face { font-family: 'Alegreya'; font-style: normal; font-weight: 400; src: url('fonts/alegreya-400.woff2') format('woff2'); }
+@font-face { font-family: 'Alegreya'; font-style: italic; font-weight: 400; src: url('fonts/alegreya-400i.woff2') format('woff2'); }
+@font-face { font-family: 'Alegreya'; font-style: normal; font-weight: 700; src: url('fonts/alegreya-700.woff2') format('woff2'); }
+
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
 
 :root {
@@ -25,6 +51,8 @@
   --search-color: #fff;
   --text-scale: 1;
   --glow-color: #ffd700;
+  --font-line-height: 1.45;
+  --lh-modifier: 1;
 }
 
 @media (prefers-color-scheme: light) {
@@ -207,15 +235,15 @@ body {
   display: none;
 }
 
-:root, :root[data-font="rosarivo"] { --font-family: 'Rosarivo', serif; }
-:root[data-font="baskervville"] { --font-family: 'Baskervville', serif; }
-:root[data-font="eb-garamond"] { --font-family: 'EB Garamond', serif; }
-:root[data-font="libre-caslon"] { --font-family: 'Libre Caslon Text', serif; }
-:root[data-font="pt-serif"] { --font-family: 'PT Serif', serif; }
-:root[data-font="lora"] { --font-family: 'Lora', serif; }
-:root[data-font="literata"] { --font-family: 'Literata', serif; }
-:root[data-font="charis-sil"] { --font-family: 'Charis SIL', serif; }
-:root[data-font="alegreya"] { --font-family: 'Alegreya', serif; }
+:root, :root[data-font="rosarivo"] { --font-family: 'Rosarivo', Georgia, serif; --font-line-height: 1.55; }
+:root[data-font="eb-garamond"] { --font-family: 'EB Garamond', Garamond, serif; --font-line-height: 1.52; }
+:root[data-font="baskervville"] { --font-family: 'Baskervville', Baskerville, serif; --font-line-height: 1.48; }
+:root[data-font="libre-caslon-text"] { --font-family: 'Libre Caslon Text', Georgia, serif; --font-line-height: 1.45; }
+:root[data-font="lora"] { --font-family: 'Lora', Cambria, serif; --font-line-height: 1.45; }
+:root[data-font="alegreya"] { --font-family: 'Alegreya', Georgia, serif; --font-line-height: 1.44; }
+:root[data-font="literata"] { --font-family: 'Literata', 'Times New Roman', serif; --font-line-height: 1.42; }
+:root[data-font="pt-serif"] { --font-family: 'PT Serif', 'Times New Roman', serif; --font-line-height: 1.40; }
+:root[data-font="charis-sil"] { --font-family: 'Charis SIL', Charter, serif; --font-line-height: 1.38; }
 
 .title {
   text-align: center;
@@ -458,7 +486,7 @@ body {
 }
 
 #results {
-  max-width: 680px;
+  max-width: 65ch;
   margin: 0 auto;
   padding: 48px 24px 120px;
   overflow-anchor: none;
@@ -478,7 +506,7 @@ body {
 
 .result-text {
   font-size: calc(1.2rem * var(--text-scale));
-  line-height: 1.75;
+  line-height: calc(var(--font-line-height) * var(--lh-modifier));
   color: var(--result-text);
   margin-bottom: 2px;
   transition: color 0.3s;
@@ -542,11 +570,6 @@ body {
   text-transform: uppercase;
   color: var(--chapter-heading);
   white-space: nowrap;
-}
-
-/* Paragraph mode */
-.paragraph-mode .result-text {
-  line-height: 1.9;
 }
 
 .paragraph-mode .result-ref {
