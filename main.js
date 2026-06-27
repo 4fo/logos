@@ -52,23 +52,23 @@ themePills.forEach(p => p.addEventListener('click', () => setTheme(p.dataset.the
 
 // ─── Settings panel ─────────────────────────────────────
 
-const header = document.getElementById('header');
 const settingsBtn = document.getElementById('settings-btn');
+const settingsPanel = document.getElementById('settings-panel');
 const settingsClose = document.getElementById('settings-close');
 
 settingsBtn.addEventListener('click', e => {
   e.stopPropagation();
-  header.classList.toggle('settings-mode');
+  settingsPanel.classList.toggle('visible');
 });
 
 settingsClose.addEventListener('click', e => {
   e.stopPropagation();
-  header.classList.remove('settings-mode');
+  settingsPanel.classList.remove('visible');
 });
 
 document.addEventListener('click', e => {
-  if (header.classList.contains('settings-mode') && !header.contains(e.target)) {
-    header.classList.remove('settings-mode');
+  if (settingsPanel.classList.contains('visible') && !settingsPanel.contains(e.target) && e.target !== settingsBtn) {
+    settingsPanel.classList.remove('visible');
   }
 });
 
@@ -233,6 +233,37 @@ function appendChapter(pos, where) {
 
 async function loadBible() {
   container = document.getElementById('results');
+
+  let touchStartX = 0, touchStartY = 0;
+  container.addEventListener('touchstart', e => {
+    if (!current) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  container.addEventListener('touchend', e => {
+    if (!current || isFetching) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+      isFetching = true;
+      const target = dx > 0
+        ? getPrevChapterPos(renderedChapters[0])
+        : getNextChapterPos(renderedChapters[renderedChapters.length - 1]);
+      if (target) initChapterView(target.book, target.chapter);
+      isFetching = false;
+    }
+  }, { passive: true });
+  container.addEventListener('wheel', e => {
+    if (!current || !e.shiftKey || isFetching) return;
+    e.preventDefault();
+    isFetching = true;
+    const target = e.deltaX > 0
+      ? getNextChapterPos(renderedChapters[renderedChapters.length - 1])
+      : getPrevChapterPos(renderedChapters[0]);
+    if (target) initChapterView(target.book, target.chapter);
+    isFetching = false;
+  }, { passive: false });
+
   try {
     const base = import.meta.env.BASE_URL;
     const res = await fetch(`${base}data/verses-1769.json`);
@@ -410,41 +441,6 @@ window.addEventListener('scroll', () => {
     }
   }
 }, { passive: true });
-
-// ─── Gesture navigation ─────────────────────────────────
-
-let touchStartX = 0, touchStartY = 0;
-
-container.addEventListener('touchstart', e => {
-  if (!current) return;
-  touchStartX = e.touches[0].clientX;
-  touchStartY = e.touches[0].clientY;
-}, { passive: true });
-
-container.addEventListener('touchend', e => {
-  if (!current || isFetching) return;
-  const dx = e.changedTouches[0].clientX - touchStartX;
-  const dy = e.changedTouches[0].clientY - touchStartY;
-  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
-    isFetching = true;
-    const target = dx > 0
-      ? getPrevChapterPos(renderedChapters[0])
-      : getNextChapterPos(renderedChapters[renderedChapters.length - 1]);
-    if (target) initChapterView(target.book, target.chapter);
-    isFetching = false;
-  }
-}, { passive: true });
-
-container.addEventListener('wheel', e => {
-  if (!current || !e.shiftKey || isFetching) return;
-  e.preventDefault();
-  isFetching = true;
-  const target = e.deltaX > 0
-    ? getNextChapterPos(renderedChapters[renderedChapters.length - 1])
-    : getPrevChapterPos(renderedChapters[0]);
-  if (target) initChapterView(target.book, target.chapter);
-  isFetching = false;
-}, { passive: false });
 
 // ─── Event bindings ─────────────────────────────────────
 

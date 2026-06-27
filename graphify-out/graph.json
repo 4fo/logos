@@ -1,0 +1,370 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "vite.config.js",
+      "file_type": "code",
+      "source_file": "/Users/jva/Documents/LOGOS/vite.config.js",
+      "source_location": "L1",
+      "id": "users_jva_documents_logos_vite_config_js",
+      "community": 3,
+      "norm_label": "vite.config.js"
+    },
+    {
+      "label": "main.js",
+      "file_type": "code",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L1",
+      "id": "users_jva_documents_logos_main_js",
+      "community": 0,
+      "norm_label": "main.js"
+    },
+    {
+      "label": "parseRef()",
+      "file_type": "code",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L9",
+      "id": "main_parseref",
+      "community": 1,
+      "norm_label": "parseref()"
+    },
+    {
+      "label": "refScore()",
+      "file_type": "code",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L14",
+      "id": "main_refscore",
+      "community": 0,
+      "norm_label": "refscore()"
+    },
+    {
+      "label": "showError()",
+      "file_type": "code",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L29",
+      "id": "main_showerror",
+      "community": 2,
+      "norm_label": "showerror()"
+    },
+    {
+      "label": "loadBible()",
+      "file_type": "code",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L34",
+      "id": "main_loadbible",
+      "community": 2,
+      "norm_label": "loadbible()"
+    },
+    {
+      "label": "showRandomVerse()",
+      "file_type": "code",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L87",
+      "id": "main_showrandomverse",
+      "community": 2,
+      "norm_label": "showrandomverse()"
+    },
+    {
+      "label": "setChapterBadge()",
+      "file_type": "code",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L94",
+      "id": "main_setchapterbadge",
+      "community": 1,
+      "norm_label": "setchapterbadge()"
+    },
+    {
+      "label": "doSearch()",
+      "file_type": "code",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L99",
+      "id": "main_dosearch",
+      "community": 0,
+      "norm_label": "dosearch()"
+    },
+    {
+      "label": "loadChapter()",
+      "file_type": "code",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L114",
+      "id": "main_loadchapter",
+      "community": 1,
+      "norm_label": "loadchapter()"
+    },
+    {
+      "label": "renderEntries()",
+      "file_type": "code",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L132",
+      "id": "main_renderentries",
+      "community": 0,
+      "norm_label": "renderentries()"
+    },
+    {
+      "label": "applyTheme()",
+      "file_type": "code",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L178",
+      "id": "main_applytheme",
+      "community": 0,
+      "norm_label": "applytheme()"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_src": "users_jva_documents_logos_main_js",
+      "_tgt": "main_parseref",
+      "source": "users_jva_documents_logos_main_js",
+      "target": "main_parseref",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_src": "users_jva_documents_logos_main_js",
+      "_tgt": "main_refscore",
+      "source": "users_jva_documents_logos_main_js",
+      "target": "main_refscore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_src": "users_jva_documents_logos_main_js",
+      "_tgt": "main_showerror",
+      "source": "users_jva_documents_logos_main_js",
+      "target": "main_showerror",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L34",
+      "weight": 1.0,
+      "_src": "users_jva_documents_logos_main_js",
+      "_tgt": "main_loadbible",
+      "source": "users_jva_documents_logos_main_js",
+      "target": "main_loadbible",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L87",
+      "weight": 1.0,
+      "_src": "users_jva_documents_logos_main_js",
+      "_tgt": "main_showrandomverse",
+      "source": "users_jva_documents_logos_main_js",
+      "target": "main_showrandomverse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L94",
+      "weight": 1.0,
+      "_src": "users_jva_documents_logos_main_js",
+      "_tgt": "main_setchapterbadge",
+      "source": "users_jva_documents_logos_main_js",
+      "target": "main_setchapterbadge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L99",
+      "weight": 1.0,
+      "_src": "users_jva_documents_logos_main_js",
+      "_tgt": "main_dosearch",
+      "source": "users_jva_documents_logos_main_js",
+      "target": "main_dosearch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L114",
+      "weight": 1.0,
+      "_src": "users_jva_documents_logos_main_js",
+      "_tgt": "main_loadchapter",
+      "source": "users_jva_documents_logos_main_js",
+      "target": "main_loadchapter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L132",
+      "weight": 1.0,
+      "_src": "users_jva_documents_logos_main_js",
+      "_tgt": "main_renderentries",
+      "source": "users_jva_documents_logos_main_js",
+      "target": "main_renderentries",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L178",
+      "weight": 1.0,
+      "_src": "users_jva_documents_logos_main_js",
+      "_tgt": "main_applytheme",
+      "source": "users_jva_documents_logos_main_js",
+      "target": "main_applytheme",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L45",
+      "weight": 1.0,
+      "_src": "main_loadbible",
+      "_tgt": "main_parseref",
+      "source": "main_parseref",
+      "target": "main_loadbible",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L95",
+      "weight": 1.0,
+      "_src": "main_setchapterbadge",
+      "_tgt": "main_parseref",
+      "source": "main_parseref",
+      "target": "main_setchapterbadge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L116",
+      "weight": 1.0,
+      "_src": "main_loadchapter",
+      "_tgt": "main_parseref",
+      "source": "main_parseref",
+      "target": "main_loadchapter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L82",
+      "weight": 1.0,
+      "_src": "main_loadbible",
+      "_tgt": "main_showerror",
+      "source": "main_showerror",
+      "target": "main_loadbible",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L88",
+      "weight": 1.0,
+      "_src": "main_showrandomverse",
+      "_tgt": "main_showerror",
+      "source": "main_showerror",
+      "target": "main_showrandomverse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L76",
+      "weight": 1.0,
+      "_src": "main_loadbible",
+      "_tgt": "main_loadchapter",
+      "source": "main_loadbible",
+      "target": "main_loadchapter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L80",
+      "weight": 1.0,
+      "_src": "main_loadbible",
+      "_tgt": "main_showrandomverse",
+      "source": "main_loadbible",
+      "target": "main_showrandomverse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L90",
+      "weight": 1.0,
+      "_src": "main_showrandomverse",
+      "_tgt": "main_renderentries",
+      "source": "main_showrandomverse",
+      "target": "main_renderentries",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L91",
+      "weight": 1.0,
+      "_src": "main_showrandomverse",
+      "_tgt": "main_setchapterbadge",
+      "source": "main_showrandomverse",
+      "target": "main_setchapterbadge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L129",
+      "weight": 1.0,
+      "_src": "main_loadchapter",
+      "_tgt": "main_setchapterbadge",
+      "source": "main_setchapterbadge",
+      "target": "main_loadchapter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/jva/Documents/LOGOS/main.js",
+      "source_location": "L123",
+      "weight": 1.0,
+      "_src": "main_loadchapter",
+      "_tgt": "main_renderentries",
+      "source": "main_loadchapter",
+      "target": "main_renderentries",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": []
+}
