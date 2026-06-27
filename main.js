@@ -99,26 +99,34 @@ themePills.forEach(p => p.addEventListener('click', () => setTheme(p.dataset.the
 
 // ─── Settings panel ─────────────────────────────────────
 
+const header = document.getElementById('header');
 const settingsBtn = document.getElementById('settings-btn');
 const settingsPanel = document.getElementById('settings-panel');
 const settingsClose = document.getElementById('settings-close');
 
 settingsBtn.addEventListener('click', e => {
   e.stopPropagation();
+  const isOpening = !settingsPanel.classList.contains('visible');
   settingsPanel.classList.toggle('visible');
   settingsBtn.classList.toggle('open');
+  header.classList.add('covering');
+  setTimeout(() => header.classList.remove('covering'), isOpening ? 100 : 550);
 });
 
 settingsClose.addEventListener('click', e => {
   e.stopPropagation();
   settingsPanel.classList.remove('visible');
   settingsBtn.classList.remove('open');
+  header.classList.add('covering');
+  setTimeout(() => header.classList.remove('covering'), 550);
 });
 
 document.addEventListener('click', e => {
   if (settingsPanel.classList.contains('visible') && !settingsPanel.contains(e.target) && e.target !== settingsBtn) {
     settingsPanel.classList.remove('visible');
     settingsBtn.classList.remove('open');
+    header.classList.add('covering');
+    setTimeout(() => header.classList.remove('covering'), 550);
   }
 });
 

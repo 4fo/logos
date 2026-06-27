@@ -142,6 +142,12 @@ body {
   background: var(--bg);
   z-index: 1;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.05s;
+}
+
+#header.covering::after {
+  opacity: 1;
 }
 
 #header::before {
