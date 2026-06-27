@@ -210,6 +210,8 @@ function applyFont(idx) {
 }
 
 fontToggle.addEventListener('click', () => applyFont((fontIdx + 1) % FONTS.length));
+document.getElementById('font-prev').addEventListener('click', e => { e.stopPropagation(); applyFont((fontIdx - 1 + FONTS.length) % FONTS.length); });
+document.getElementById('font-next').addEventListener('click', e => { e.stopPropagation(); applyFont((fontIdx + 1) % FONTS.length); });
 applyFont(fontIdx);
 
 // ─── Chapter helpers ────────────────────────────────────
