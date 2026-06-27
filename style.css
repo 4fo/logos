@@ -108,9 +108,10 @@
 
 input { -webkit-user-select: text; user-select: text; }
 
-#results { -webkit-user-select: none; user-select: none; touch-action: pan-y; }
-.result-text { -webkit-user-select: text; user-select: text; }
-.result-ref, .inline-ref { -webkit-user-select: none; user-select: none; outline: none; }
+#results { -webkit-user-select: none; user-select: none; touch-action: manipulation; -webkit-touch-callout: none; }
+#results .result-text { -webkit-user-select: text; user-select: text; }
+#results .result-ref, #results .inline-ref { -webkit-user-select: none; user-select: none; outline: none; }
+#results .paragraph-mode .result-text { -webkit-user-select: none; user-select: none; }
 
 ::selection { background: rgba(255, 215, 0, 0.35); color: #fff; }
 @media (prefers-color-scheme: light) {
@@ -127,6 +128,7 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: contain;
+  touch-action: pan-y;
   transition: background 0.3s, color 0.3s;
 }
 
