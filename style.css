@@ -108,9 +108,9 @@
 
 input { -webkit-user-select: text; user-select: text; }
 
-#results { -webkit-user-select: none; user-select: none; touch-action: manipulation; -webkit-touch-callout: none; }
+#results { -webkit-user-select: none; user-select: none; }
 #results .result-text { -webkit-user-select: text; user-select: text; }
-#results .result-ref, #results .inline-ref { -webkit-user-select: none; user-select: none; outline: none; }
+#results .result-ref, #results .inline-ref { -webkit-user-select: none; user-select: none; touch-action: manipulation; -webkit-touch-callout: none; outline: none; }
 #results .paragraph-mode .result-text { -webkit-user-select: none; user-select: none; }
 
 ::selection { background: rgba(255, 215, 0, 0.35); color: #fff; }
