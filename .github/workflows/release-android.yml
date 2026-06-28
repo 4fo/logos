@@ -48,7 +48,7 @@ jobs:
 
       - name: Rename APK
         working-directory: android/app/build/outputs/apk/release
-        run: mv "LOGOS - The Holy Bible-release.apk" "LOGOS - The Holy Bible.apk" || true
+        run: mv app-release-unsigned.apk "LOGOS - The Holy Bible.apk"
 
       - uses: actions/upload-artifact@v4
         with:
