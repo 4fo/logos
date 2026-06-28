@@ -10,6 +10,8 @@
 
 A single-page web experience for reading and searching the 1769 King James Version of the Bible — also available as a **signed Android APK**. No menus, no chrome, no advertisements — just scripture. Supports system/light/dark themes.
 
+![Banner](banner.png)
+
 ### Download
 
 | Platform | Link |
@@ -32,12 +34,13 @@ The APK is a WebView wrapper — all visuals, interactions, animations, fonts, g
 - **Glass sticky header** with real-time `backdrop-filter` blur of scrolling content
 - **Settings panel** — gear button opens an in-place slide-out:
   - **Theme**: System / Light / Dark (manual override, persisted)
-  - **Layout**: Verse per line / Continuous paragraph (persisted)
-  - **Text size**: `−` / `+` controls, 0.7×–1.5× (persisted)
+  - **Layout**: Verse per line / Paragraph (persisted)
+  - **Text size**: `−` / `+` controls, 0.7×–2.0× (persisted)
   - **Typography**: selectable typeface (persisted)
+- **Pinch-to-zoom** — two-finger pinch adjusts text size on touch devices
 - **Copy verse** — click any verse reference to copy text + reference
 - **Horizontal swipe** (touch) and **shift+scroll** (desktop) for chapter navigation
-- **Deep linking** — URL hash for every verse (`#Genesis_1_1`)
+- **Deep linking** — URL hash for every verse (`#Genesis-1-1`)
 - **Keyboard shortcuts**: `/` to focus search, `Esc` for random verse
 
 ### Details
@@ -46,7 +49,7 @@ The APK is a WebView wrapper — all visuals, interactions, animations, fonts, g
 |---|---|
 | Typefaces | Rosarivo, Baskervville, EB Garamond, Libre Caslon Text, PT Serif, Lora, Literata, Charis SIL, Alegreya |
 | Bundle | JS ~31 KB (11 KB gzip), CSS ~13 KB (3 KB gzip) |
-| APK | 4.9 MB signed release |
+| APK | 4.9 MB unsigned release |
 | Min SDK | Android 7.0 (API 24) |
 
 ### Use it
@@ -89,7 +92,7 @@ npx cap copy android
 cd android && export JAVA_HOME=/Applications/Android\ Studio.app/Contents/jbr/Contents/Home && ./gradlew assembleRelease
 ```
 
-The signed APK is written to `android/app/build/outputs/apk/release/LOGOS - The Holy Bible.apk`.
+The APK is written to `android/app/build/outputs/apk/release/LOGOS - The Holy Bible.apk`.
 
 ---
 
