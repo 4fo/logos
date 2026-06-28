@@ -48,11 +48,19 @@ jobs:
 
       - name: Rename APK
         working-directory: android/app/build/outputs/apk/release
-        run: mv "LOGOS - The Holy Bible-release.apk" "LOGOS - The Holy Bible.apk"
+        run: |
+          apk=$(ls *.apk 2>/dev/null | head -1)
+          if [ -n "$apk" ]; then
+            mv "$apk" "LOGOS - The Holy Bible.apk"
+          else
+            echo "No APK found in $(pwd)"
+            ls -la
+            exit 1
+          fi
 
       - uses: actions/upload-artifact@v4
         with:
-          name: LOGOS - The Holy Bible.apk
+          name: app-release
           path: android/app/build/outputs/apk/release/LOGOS - The Holy Bible.apk
 
   release:
@@ -64,7 +72,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: LOGOS - The Holy Bible.apk
+          name: app-release
 
       - name: Determine release tag
         id: tag
