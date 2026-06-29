@@ -1,8 +1,9 @@
 const sharp = require('sharp');
 const fs = require('fs');
 
-const SVG_PATH = 'LOGOS_logo/Logos_App_Logo.svg';
+const MASTER = 'LOGOS_logo/logos-icon-master.png';
 const RES_DIR = 'android/app/src/main/res';
+const BG = { r: 230, g: 230, b: 230, alpha: 1 }; // #e6e6e6
 
 const DENS = [
   { dir: 'mipmap-mdpi', size: 48 },
@@ -13,51 +14,32 @@ const DENS = [
 ];
 
 (async () => {
-  const src = fs.readFileSync(SVG_PATH, 'utf-8');
+  // ======== Adaptive foreground: master → 108×108 transparent ========
+  const fg = await sharp(MASTER).resize(108, 108).png().toBuffer();
 
-  // ======== LEGACY ICONS: SVG as-is (light gray rect, dark text) ========
+  await sharp(fg).toFile(RES_DIR + '/mipmap-anydpi-v26/ic_launcher_foreground.png');
   for (const d of DENS) {
-    await sharp(Buffer.from(src)).resize(d.size, d.size).png().toFile(
-      RES_DIR + '/' + d.dir + '/ic_launcher.png'
-    );
-    await sharp(Buffer.from(src)).resize(d.size, d.size).png().toFile(
-      RES_DIR + '/' + d.dir + '/ic_launcher_round.png'
-    );
-    console.log('OK legacy ' + d.dir);
-  }
-
-  // ======== ADAPTIVE FOREGROUND: just remove the rect, keep everything else ========
-  const rectStart = src.indexOf('<rect');
-  const rectEnd = src.indexOf('/>', rectStart) + 2;
-  const fgSvg = src.slice(0, rectStart) + src.slice(rectEnd);
-
-  const fgSize = 108;
-  const fgBuf = await sharp(Buffer.from(fgSvg)).resize(fgSize, fgSize).png().toBuffer();
-  await sharp(fgBuf).toFile(RES_DIR + '/mipmap-anydpi-v26/ic_launcher_foreground.png');
-  for (const d of DENS) {
-    await sharp(fgBuf).resize(d.size, d.size).png().toFile(
+    await sharp(fg).resize(d.size, d.size).png().toFile(
       RES_DIR + '/' + d.dir + '/ic_launcher_foreground.png'
     );
   }
   console.log('OK foreground');
 
-  // ======== VERIFY ========
-  const verify = async (p) => {
-    const buf = await sharp(p).raw().toBuffer({resolveWithObject: true});
-    const d = buf.data;
-    let trans=0, dark=0, white=0, gray=0;
-    for (let i=0; i<d.length; i+=4) {
-      if (d[i+3]<10) trans++;
-      else if (d[i]<40 && d[i+1]<40 && d[i+2]<40) dark++;
-      else if (d[i]>200 && d[i+1]>200 && d[i+2]>200) white++;
-      else gray++;
-    }
-    return {trans, dark, white, gray, tot: d.length/4, w: buf.info.width, h: buf.info.height};
-  };
+  // ======== Legacy icons: master → size, composited over #e6e6e6 ========
+  for (const d of DENS) {
+    const icon = await sharp(MASTER).resize(d.size, d.size).png().toBuffer();
+    const bg = await sharp({
+      create: { width: d.size, height: d.size, channels: 4, background: BG }
+    }).png().toBuffer();
 
-  const fg = await verify(RES_DIR + '/mipmap-xxxhdpi/ic_launcher_foreground.png');
-  console.log('Foreground: ' + fg.w + 'x' + fg.h + ' trans=' + (fg.trans/fg.tot*100).toFixed(1) + '% dark=' + (fg.dark/fg.tot*100).toFixed(1) + '% white=' + (fg.white/fg.tot*100).toFixed(1) + '% gray=' + (fg.gray/fg.tot*100).toFixed(1) + '%');
+    await sharp(bg).composite([{ input: icon }]).png().toFile(
+      RES_DIR + '/' + d.dir + '/ic_launcher.png'
+    );
+    await sharp(bg).composite([{ input: icon }]).png().toFile(
+      RES_DIR + '/' + d.dir + '/ic_launcher_round.png'
+    );
+    console.log('OK legacy ' + d.dir);
+  }
 
-  const leg = await verify(RES_DIR + '/mipmap-xxxhdpi/ic_launcher.png');
-  console.log('Legacy: ' + leg.w + 'x' + leg.h + ' trans=' + (leg.trans/leg.tot*100).toFixed(1) + '% dark=' + (leg.dark/leg.tot*100).toFixed(1) + '% white=' + (leg.white/leg.tot*100).toFixed(1) + '% gray=' + (leg.gray/leg.tot*100).toFixed(1) + '%');
+  console.log('Done.');
 })();
