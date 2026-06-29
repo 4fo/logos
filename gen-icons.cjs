@@ -14,18 +14,19 @@ const DENS = [
 ];
 
 (async () => {
-  // ======== Adaptive foreground: master → 108×108 transparent ========
-  const fg = await sharp(MASTER).resize(108, 108).png().toBuffer();
+  // ======== Adaptive foreground (108×108) ========
+  const fg108 = await sharp(MASTER).resize(108, 108).png().toBuffer();
+  await sharp(fg108).toFile(RES_DIR + '/mipmap-anydpi-v26/ic_launcher_foreground.png');
+  console.log('OK foreground 108x108 (anydpi-v26)');
 
-  await sharp(fg).toFile(RES_DIR + '/mipmap-anydpi-v26/ic_launcher_foreground.png');
+  // ======== Per-density foregrounds (downscaled from master, not from 108!) ========
   for (const d of DENS) {
-    await sharp(fg).resize(d.size, d.size).png().toFile(
-      RES_DIR + '/' + d.dir + '/ic_launcher_foreground.png'
-    );
+    const icon = await sharp(MASTER).resize(d.size, d.size).png().toBuffer();
+    await sharp(icon).toFile(RES_DIR + '/' + d.dir + '/ic_launcher_foreground.png');
+    console.log('OK foreground ' + d.dir);
   }
-  console.log('OK foreground');
 
-  // ======== Legacy icons: master → size, composited over #e6e6e6 ========
+  // ======== Legacy icons: master → size over #e6e6e6 ========
   for (const d of DENS) {
     const icon = await sharp(MASTER).resize(d.size, d.size).png().toBuffer();
     const bg = await sharp({
