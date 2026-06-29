@@ -42,6 +42,21 @@ jobs:
       - name: Sync Capacitor
         run: npx cap copy android
 
+      - name: Set up release keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > android/app/logos-release.keystore
+          cat > android/keystore.properties <<EOF
+          storePassword=$KEYSTORE_PASSWORD
+          keyPassword=$KEY_PASSWORD
+          keyAlias=$KEY_ALIAS
+          storeFile=logos-release.keystore
+          EOF
+
       - name: Build release APK
         working-directory: android
         run: ./gradlew assembleRelease
