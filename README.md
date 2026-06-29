@@ -10,7 +10,7 @@
 
 A single-page web experience for reading and searching the 1769 King James Version of the Bible — also available as a **signed Android APK**. No menus, no chrome, no advertisements — just scripture. Supports system/light/dark themes.
 
-![Banner](banner.png)
+![Banner](LOGOS_logo/Logos_screens.png)
 
 ### Download
 
